@@ -46,7 +46,7 @@ def scatter_pulse_video(data):
 
 
 def Analysis():
-    data = load_data.data('/home/gustaf/Downloads/reu/data_new/final/')
+    data = load_data.Data('/home/gustaf/Downloads/reu/data_new/final/')
     scatter_pulse_video(data)
 
 if __name__ == '__main__':
