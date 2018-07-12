@@ -280,7 +280,7 @@ def preprocess(working_directory):
     participants = max([int(r[0:3]) for r in res])
 
     for i in range(1, participants + 1):
-        if i == 4 or i == 20:  # these have faulty pulse files
+        if i == 4 or i == 20 or i == 23:  # these have faulty pulse files
             continue
         print str(i) + '/' + str(participants)
         filename = ('0' + str(participants + 1 - i) + '_' + str(i) + '.csv')
@@ -306,5 +306,5 @@ def preprocess(working_directory):
 
 
 if __name__ == "__main__":
-    working_directory = '/home/gustaf/Downloads/reu/data_new/'
+    working_directory = '/home/gustaf/Downloads/data/'
     preprocess(working_directory)
