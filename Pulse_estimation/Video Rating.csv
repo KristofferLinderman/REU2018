@@ -1,0 +1,150 @@
+6/28/2017 16:12,No,Disgust,4,No,4
+6/28/2017 16:19,Yes,Sadness,5,Yes,2
+6/28/2017 16:28,Yes,Surprise,4,Yes,3
+6/28/2017 16:35,Yes,Sadness,5,Yes,1
+6/28/2017 16:45,Yes,Happiness,5,Yes,5
+6/29/2017 9:27,No,Surprise,3,No,3
+6/29/2017 9:34,Yes,Sadness,1,No,2
+6/29/2017 9:43,No,Happiness,3,Yes,5
+6/29/2017 9:47,No,Contempt,3,No,4
+6/29/2017 9:53,Yes,Sadness,5,Yes,1
+6/29/2017 12:10,No,Happiness,4,Maybe,5
+6/29/2017 12:19,No,Contempt,2,No,3
+6/29/2017 12:23,No,Disgust,3,Yes,4
+6/29/2017 12:30,Yes,Sadness,5,Yes,2
+6/29/2017 12:36,Yes,Sadness,4,Yes,1
+6/29/2017 13:11,No,"Sadness, Contempt",4,No,1
+6/29/2017 13:15,No,"Happiness, Surprise, Disgust",5,No,4
+6/29/2017 13:23,No,confusion,5,Yes,3
+6/29/2017 13:32,No,"Happiness, Surprise",2,No,5
+6/29/2017 13:38,Yes,Sadness,5,Maybe,2
+6/29/2017 15:17,No,Happiness,4,Maybe,5
+6/29/2017 15:21,No,Anger,5,Maybe,4
+6/29/2017 15:27,Yes,Sadness,4,Yes,1
+6/29/2017 15:34,No,Sadness,5,Yes,2
+6/29/2017 15:42,Yes,Surprise,4,Maybe,3
+6/29/2017 16:07,No,Sadness,4,No,1
+6/29/2017 16:14,Yes,Happiness,5,Yes,3
+6/29/2017 16:22,Maybe,Happiness,5,Yes,5
+6/29/2017 16:28,Yes,Sadness,4,Maybe,2
+6/29/2017 16:32,No,"Anger, Disgust",4,Yes,4
+7/3/2017 14:03,No,"Surprise, Fear",5,No,3
+7/3/2017 14:07,No,"Sadness, Disgust, Contempt",4,No,4
+7/3/2017 14:13,Yes,"Happiness, Sadness",3,Yes,1
+7/3/2017 14:21,No,"Happiness, Surprise",4,Yes,5
+7/3/2017 14:27,Yes,"Happiness, Sadness",3,Yes,2
+7/3/2017 16:12,Maybe,Happiness,3,Yes,5
+7/3/2017 16:16,No,"Sadness, Disgust",4,Maybe,4
+7/3/2017 16:22,Yes,"Sadness, Fear, Anger",5,Yes,1
+7/3/2017 16:29,No,Sadness,4,No,2
+7/3/2017 16:37,No,"Surprise, Fear",5,Yes,3
+7/3/2017 16:41,No,Happiness,4,Yes,5
+7/3/2017 16:42,No,true love :(,5,Yes,2
+7/3/2017 16:43,Yes,"Sadness, Anger, Disgust",5,Yes,4
+7/3/2017 16:45,No,"Surprise, Fear, Disgust",4,Yes,3
+7/3/2017 16:45,No,Sadness,4,Yes,1
+7/5/2017 13:23,Yes,"Happiness, Surprise, Contempt",3,Maybe,5
+7/5/2017 13:27,No,"Anger, Disgust",3,Maybe,4
+7/5/2017 13:34,Yes,"Happiness, Sadness",4,Yes,2
+7/5/2017 13:41,No,"Happiness, Surprise",5,Yes,3
+7/5/2017 13:47,Yes,"Happiness, Sadness, Surprise",4,Yes,1
+7/6/2017 11:23,No,Anger,3,Maybe,3
+7/6/2017 11:28,No,"Sadness, Anger",3,Maybe,4
+7/6/2017 11:35,No,"Happiness, Sadness, Surprise",4,Yes,1
+7/6/2017 11:41,No,"Happiness, Sadness, Surprise",5,Yes,2
+7/6/2017 11:49,No,Happiness,4,Yes,5
+7/6/2017 12:08,Yes,Sadness,5,Yes,1
+7/6/2017 12:16,No,"Happiness, Disgust",3,Maybe,5
+7/6/2017 12:23,Yes,"Happiness, Surprise, Fear, Disgust",5,Yes,3
+7/6/2017 12:27,No,"Happiness, Surprise, Anger, Disgust, Contempt",4,Yes,4
+7/6/2017 12:33,Yes,"Happiness, Sadness",4,Maybe,2
+7/6/2017 14:24,Yes,Sadness,4,Yes,1
+7/6/2017 14:32,Yes,"Happiness, Surprise",5,Yes,5
+7/6/2017 14:39,No,"Happiness, Surprise, Disgust, Contempt, intrigue",5,Yes,3
+7/6/2017 14:45,No,"Sadness, Surprise, Disgust, Contempt, indignant",5,Yes,4
+7/6/2017 14:51,Yes,"Happiness, Sadness, Surprise",5,Yes,2
+7/6/2017 15:23,Maybe,"Happiness, Sadness",4,Maybe,2
+7/6/2017 15:31,Yes,"Surprise, Disgust, curious",4,Maybe,3
+7/6/2017 15:37,No,"Happiness, Sadness",4,No,1
+7/6/2017 15:45,No,Happiness,4,Yes,5
+7/6/2017 15:49,No,Anger,4,Maybe,4
+7/6/2017 16:06,Maybe,Sadness,5,Yes,1
+7/6/2017 16:13,Yes,"Happiness, Sadness",5,Yes,2
+7/6/2017 16:21,No,Disgust,2,No,3
+7/6/2017 16:29,No,Happiness,4,Yes,5
+7/6/2017 16:33,No,"Sadness, Surprise, Anger",4,No,4
+7/7/2017 12:06,Yes,"Happiness, Sadness",4,Yes,2
+7/7/2017 12:13,No,Sadness,3,Maybe,1
+7/7/2017 12:20,No,Surprise,4,Yes,3
+7/7/2017 12:27,No,"Happiness, Surprise",5,Yes,5
+7/7/2017 12:31,No,"Anger, Disgust",4,Yes,4
+7/7/2017 14:13,Yes,Sadness,4,Yes,1
+7/7/2017 14:17,No,"Sadness, Surprise, Anger, Disgust",3,Maybe,4
+7/7/2017 14:24,No,Happiness,3,Maybe,5
+7/7/2017 14:30,Yes,"Happiness, Sadness",5,Yes,2
+7/7/2017 14:37,No,"Fear, Disgust",3,Maybe,3
+7/10/2017 15:49,Yes,"Sadness, Anger, Disgust",4,Yes,4
+7/10/2017 15:56,Yes,"Happiness, Sadness",4,Yes,1
+7/10/2017 16:04,Yes,"Happiness, Sadness, Surprise",5,Yes,5
+7/10/2017 16:10,Yes,"Happiness, Sadness, Surprise",4,Yes,2
+7/10/2017 16:18,Yes,"Surprise, Disgust",5,Yes,3
+7/12/2017 10:10,Yes,"Happiness, Surprise, Disgust",4,Yes,3
+7/12/2017 10:17,Yes,"Happiness, Sadness",5,Yes,2
+7/12/2017 10:25,Yes,Happiness,5,Yes,5
+7/12/2017 10:31,Yes,"Happiness, Sadness",4,Yes,1
+7/12/2017 10:35,Maybe,"Sadness, Fear, Disgust",3,Maybe,4
+7/12/2017 11:23,No,Fear,4,No,3
+7/12/2017 11:29,No,Sadness,5,Maybe,1
+7/12/2017 11:37,No,Happiness,4,Yes,5
+7/12/2017 11:41,No,Anger,5,Maybe,4
+7/12/2017 11:48,No,"Happiness, Nostalgic, in love",5,Yes,2
+7/12/2017 14:09,No,"Happiness, Surprise, it was funny",4,Yes,5
+7/12/2017 14:13,No,"Anger, Disgust",3,Maybe,4
+7/12/2017 14:21,No,"Surprise, Disgust, this one was also sometimes funny and confusing",4,Maybe,3
+7/12/2017 14:28,No,Sadness,3,Maybe,1
+7/12/2017 14:34,Yes,"Happiness, Sadness, yan stop ruining my day :(",5,Yes,2
+7/12/2017 15:07,No,Sadness,4,No,1
+7/12/2017 15:15,Yes,"Happiness, Surprise",4,Maybe,5
+7/12/2017 15:23,No,"Happiness, Surprise, Fear, Disgust, confused",4,No,3
+7/12/2017 15:30,Yes,"Happiness, Sadness",3,Maybe,2
+7/12/2017 15:33,Yes,"Happiness, Anger",2,Maybe,4
+7/13/2017 10:29,No,"sleepy, nauseaus",1,No,4
+7/13/2017 10:37,No,confused,1,No,5
+7/13/2017 10:45,No,,3,No,3
+7/13/2017 10:52,No,Happiness,4,No,1
+7/13/2017 10:59,Yes,,5,No,2
+7/13/2017 13:19,Yes,"Happiness, Sadness",4,Yes,2
+7/13/2017 13:27,Yes,Happiness,3,Maybe,5
+7/13/2017 13:34,Yes,"Sadness, Fear",5,Yes,1
+7/13/2017 13:42,No,"Surprise, Fear, Anger, Disgust, Contempt, Yan is ruining everything good thing in my life by spoiling",4,No,3
+7/13/2017 13:47,No,"Surprise, Anger, Disgust, confusion",2,No,4
+7/13/2017 14:07,Yes,"Sadness, Anger",4,Yes,1
+7/13/2017 14:11,No,"Sadness, Anger, Disgust",3,No,4
+7/13/2017 14:17,Yes,"Happiness, Sadness",4,Maybe,2
+7/13/2017 14:24,No,"Happiness, Disgust",3,Maybe,5
+7/13/2017 14:32,No,"Surprise, Fear, Anger",4,Yes,3
+7/13/2017 15:08,No,"Sadness, Anger, Disgust",4,Yes,4
+7/13/2017 15:15,No,"Happiness, Surprise",2,Yes,5
+7/13/2017 15:21,Yes,"Happiness, Sadness",5,Yes,2
+7/13/2017 15:27,Yes,"Happiness, Sadness, Surprise",5,Yes,1
+7/13/2017 15:34,No,"Happiness, Surprise, Fear",5,Yes,3
+7/13/2017 15:49,No,"Surprise, Fear, Disgust",4,Yes,3
+7/13/2017 15:53,No,"Happiness, Sadness, Anger",3,Yes,4
+7/13/2017 16:00,Yes,"Happiness, Surprise",5,Yes,5
+7/13/2017 16:07,No,"Happiness, Sadness, Surprise, Fear",5,Yes,2
+7/13/2017 16:15,No,"Sadness, Surprise, Fear",5,Yes,1
+7/14/2017 13:06,Yes,"Happiness, Sadness, Fear",5,Yes,2
+7/14/2017 13:11,No,"Sadness, Surprise, Fear",4,Yes,4
+7/14/2017 13:18,No,Happiness,5,Yes,5
+7/14/2017 13:26,No,"Surprise, Fear, Disgust",5,Yes,3
+7/14/2017 13:32,Yes,Sadness,5,Yes,1
+7/14/2017 14:01,No,"Sadness, Fear, Anger, Disgust",4,Yes,4
+7/14/2017 14:07,Yes,"Happiness, Sadness",5,Yes,1
+7/14/2017 14:13,Yes,"Happiness, Sadness",5,Yes,2
+7/14/2017 14:21,No,"Surprise, Contempt",4,Maybe,3
+7/14/2017 14:28,No,"Happiness, Surprise, Disgust",3,No,5
+7/14/2017 15:13,Yes,"Sadness, Fear",4,Yes,2
+7/14/2017 15:21,No,"Surprise, Fear",5,No,3
+7/14/2017 15:28,No,Happiness,5,Maybe,5
+7/14/2017 15:32,No,"Sadness, Fear, Anger",4,No,4
+7/14/2017 15:38,No,Sadness,4,No,1

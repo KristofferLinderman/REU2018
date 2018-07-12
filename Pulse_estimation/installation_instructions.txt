@@ -1,0 +1,9 @@
+1. Install python 2.7
+2. Add [C:\Python27] and [C:\Python27\Scripts] to your PATH
+3. Install matplotlib [pip install matplotlib]
+4. Download opencv_python-2.4.13.5-cp27-cp27m-win_amd64.whl from [https://www.lfd.uci.edu/~gohlke/pythonlibs/#opencv] or use the one in the installation_files folder
+5. run [pip install opencv_python-2.4.13.5-cp27-cp27m-win_amd64.whl]
+6. Run [python get_pulse.py]
+
+If using PyCharm
+4. File - Settings - Project: {yourproject} - Project interpreter - Make sure you are using system interpreter and not the virtual environment
