@@ -31,7 +31,7 @@ final_columns = ['User', 'Video', 'Intended_emotion',
                  'Fear_min', 'Fear_max', 'Fear_average', 'Fear_median', 'Fear_standard_deviation',
                  'Contempt_min', 'Contempt_max', 'Contempt_average', 'Contempt_median', 'Contempt_standard_deviation',
                  'Smile_min', 'Smile_max', 'Smile_average', 'Smile_median', 'Smile_standard_deviation',
-                 #'Smile_min', 'Smirk_max', 'Smirk_average', 'Smirk_median', 'Smirk_standard_deviation',
+                 #'Smirk_min', 'Smirk_max', 'Smirk_average', 'Smirk_median', 'Smirk_standard_deviation',
                  'Have you watched this video before?', 'One a scale of 1 to 5, how would you rate the video?', 'Would you want to watch similar videos?', 'What did you feel when watching the video?']
 
 characteristics = ['_min', '_max', '_average', '_median', '_standard_deviation']

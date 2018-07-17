@@ -8,6 +8,7 @@ import sys
 from static_values import *
 from load_survey import *
 from trimming import *
+import random
 
 def load_sensor_data(working_directory, filename):
     '''
@@ -275,7 +276,16 @@ def plot_data(datapoints):
     plt.show()
 
 
-def preprocess(working_directory):
+def load_config():
+    config = {}
+    with open('./preprocessing/config.txt', 'r') as f:
+        for line in f:
+            parts = line.replace('\n', '').split('=')
+            config[parts[0]] = parts[1] if not parts[1] == '' else None
+    print config
+    return config
+
+def preprocess():
     '''
     Preprocesses the data from the pulse estimation and iMotions
     - trims the pulse logs to match each stimulus
@@ -285,13 +295,21 @@ def preprocess(working_directory):
     :return: None
     '''
 
+    config = load_config()
+
+    excluded_subject = -1
+    working_directory = config['DATA_DIRECTORY']
+
     os.chdir(working_directory)
     res = [re.search('\d\d\d_\d*', f) for f in os.listdir('.')]
     res = [r.group() for r in res if r]
     participants = max([int(r[0:3]) for r in res])
 
+    if config['LEAVE_ONE_SUBJECT_OUT']:
+        excluded_subject = random.randint(1, participants)
+
     for i in range(1, participants + 1):
-        if i == 4 or i == 20 or i == 23:  # these have faulty pulse files
+        if i == 4 or i == 20 or i == 23 or i == 28 or excluded_subject:  # these have faulty pulse files
             continue
         print str(i) + '/' + str(participants)
         filename = ('0' + str(participants + 1 - i) + '_' + str(i) + '.csv')
@@ -317,5 +335,4 @@ def preprocess(working_directory):
 
 
 if __name__ == "__main__":
-    working_directory = '/home/gustaf/Downloads/data_new/'
-    preprocess(working_directory)
+    preprocess()

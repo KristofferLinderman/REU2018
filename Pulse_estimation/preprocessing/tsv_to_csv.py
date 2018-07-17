@@ -14,4 +14,4 @@ def convert(directory):
 
 
 if __name__ == '__main__':
-    convert('/home/gustaf/Downloads/data_new/')
+    convert('/home/gustaf/Downloads/17_july/Survey/')

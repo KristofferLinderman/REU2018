@@ -78,6 +78,9 @@ def scatter_pulse_score(data, figure_number):
 
     plt.figure(figure_number)
     plt.scatter(scores, pulse)
+    plt.title('Pulse derivative average vs the score')
+    plt.axes().set_ylabel('Pulse derivative average [bpm / s]')
+    plt.axes().set_xlabel('Score')
 
 
 def scatter_genre_scores(data, figure_number):
@@ -216,15 +219,64 @@ def hist_emotion_facial_expressions(data, figure_number):
     e.set_ylim(ylim)
 
 
+def box_video_facial_expression(data, figure_number):
+    names = stimuli_id.keys()
+    names = sorted(names, key=lambda name: stimuli_id[name])
+
+    facial_expressions_for_video = []
+    for i in range(1, 16):
+        facial_expressions_for_video.append([])
+        for j in range(len(intended_emotions)):
+            facial_expressions_for_video[i - 1].append(data.get_column_for_video(intended_emotions[j] + '_average', id_stimuli[i]))
+
+    plt.figure(figure_number)
+
+    subplots = []
+    order = [1, 6, 11, 2, 7, 12, 3, 8, 13, 4, 9, 14, 5, 10, 15]
+    for i in range(len(facial_expressions_for_video)):
+        subplots.append(plt.subplot(3, 5, order[i]))
+        plt.title(names[i])
+        plt.boxplot(facial_expressions_for_video[i])
+        subplots[i].set_xticklabels(intended_emotions)
+        if i < 3:
+            subplots[i].set_ylim(0, 100)
+        if i >= 3 and i < 6:
+            subplots[i].set_ylim(0, 40)
+        if (i + 1) % 3 == 1:
+            subplots[i].annotate(intended_emotions[((i + 1) / 3)],
+                                 xy=(0.4, 1.2),
+                                 xycoords='axes fraction',
+                                 size='large',
+                                 annotation_clip=False)
+    plt.subplots_adjust(top=0.92, bottom=0.08)
+
+
+def scatter_abs_pulse_score(data, figure_number):
+    names = stimuli_id.keys()
+    names = sorted(names, key=lambda name: stimuli_id[name])
+    pulse = []
+    scores = []
+    for name in names:
+        pulse.extend(data.get_column_for_video('Pulse_derivative_abs_average', name))
+        scores.extend(data.get_column_for_video('One a scale of 1 to 5, how would you rate the video?', name))
+
+    plt.figure(figure_number)
+    plt.scatter(scores, pulse)
+    plt.title('Absolute value of pulse derivative average vs the score')
+    plt.axes().set_ylabel('Absolute value of pulse derivative average [bpm / s]')
+    plt.axes().set_xlabel('Score')
+
+
 def Analysis():
     data = load_data.Data('/home/gustaf/Downloads/data/final/')
     bar_diagram_video_rating(data, 1)
     box_pulse_video(data, 2)
     box_pulse_score(data, 3)
-    scatter_pulse_score(data, 4)
+    #scatter_pulse_score(data, 4)
     scatter_genre_scores(data, 5)
     box_joy_video(data, 6)
     hist_emotion_facial_expressions(data, 7)
+    box_video_facial_expression(data, 8)
     plt.show()
 
 

@@ -40,6 +40,7 @@ def cross_validation(clf, data_X, data_y, folds):
     scores = cross_val_score(clf, data_X, data_y, cv=folds)
     print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
+
 def main():
     data_X, data_y = load_data('/home/gustaf/Downloads/data/final/')
     clf = tree.DecisionTreeClassifier(max_depth=3)
