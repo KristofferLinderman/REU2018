@@ -313,13 +313,11 @@ def preprocess(working_directory):
             trim_facial_data(working_directory, i, df, experiment_time)
             # survey_duration = get_survey_duration(df)  # data already exist in timestamps
             create_final_sheet_for_subject(working_directory, i)
-            # organize(i, filename)
+            organize(i, filename)
             os.chdir(working_directory)
         else:
             print 'data for participant ' + str(i) + ' is missing, skipping that participant'
             continue
-        if i == 1:
-            return
 
     create_master_sheet(working_directory + 'final/')
 
