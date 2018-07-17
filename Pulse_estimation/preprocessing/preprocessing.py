@@ -205,16 +205,10 @@ def create_final_sheet_for_subject(working_directory, subject_id):
                 if len(answers_for_video[question]) > 1:
                     for j in range(1, len(answers_for_video[question])):
                         Q3_answer = Q3_answer + ' ' + str(answers_for_video[question][j])
-                print 'Q3 answer:\t' + Q3_answer
                 data_dict[question].append(Q3_answer)
                 continue
             data_dict[question].append(answers_for_video[question][0])
 
-    for col in final_columns:
-        try:
-            print col + ':\t' + str(len(data_dict[col]))
-        except:
-            print col + ' has no length'
     # save the data as subject id.csv e.g '7.csv'
     pd.DataFrame(data_dict)[final_columns].to_csv(str(subject_id) + '.csv')
 
