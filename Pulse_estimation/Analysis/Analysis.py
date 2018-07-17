@@ -20,10 +20,13 @@ def bar_diagram_video_rating(data, figure_number):
                     scores[name][i - 1] = scores[name][i - 1] + 1
 
     plt.figure(figure_number)
+    subplots = []
     for i in range(len(names)):
-        plt.subplot(3, 5, i + 1)
+        subplots.append(plt.subplot(3, 5, i + 1))
         plt.title('Rating of \"' + names[i] + '\"')
         plt.bar([1, 2, 3, 4, 5], scores[names[i]])
+    for sub in subplots:
+        sub.set_ylim(0, 15)
     plt.subplots_adjust(top=0.92, bottom=0.08)
 
 
@@ -118,7 +121,7 @@ def scatter_genre_scores(data, figure_number):
         for j in range(5):
             if annotation[i][j] == 0:
                 continue
-            plt.axes().annotate(annotation[i][j], xy=(i + 1, j + 1))
+            plt.axes().annotate(str(annotation[i][j] * 100 / sum(annotation[i])) + '%', xy=(i + 1, j + 1))
 
 
 def box_joy_video(data, figure_number):
@@ -185,25 +188,32 @@ def hist_emotion_facial_expressions(data, figure_number):
 
     plt.figure(figure_number)
 
-    plt.subplot(1, 5, 1)
+    a = plt.subplot(1, 5, 1)
     plt.bar(intended_emotions, facial_expressions_for_Joy)
     plt.title('Joyful video')
 
-    plt.subplot(1, 5, 2)
+    b = plt.subplot(1, 5, 2)
     plt.bar(intended_emotions, facial_expressions_for_Sadness)
     plt.title('Sad video')
 
-    plt.subplot(1, 5, 3)
+    c = plt.subplot(1, 5, 3)
     plt.bar(intended_emotions, facial_expressions_for_Anger)
     plt.title('Anger video')
 
-    plt.subplot(1, 5, 4)
+    d = plt.subplot(1, 5, 4)
     plt.bar(intended_emotions, facial_expressions_for_Fear)
     plt.title('Fearful video')
 
-    plt.subplot(1, 5, 5)
+    e = plt.subplot(1, 5, 5)
     plt.bar(intended_emotions, facial_expressions_for_Surprise)
     plt.title('Surprising video')
+
+    ylim = max(a.get_ylim(), max(b.get_ylim(), max(c.get_ylim(), max(d.get_ylim(), e.get_ylim()))))
+    a.set_ylim(ylim)
+    b.set_ylim(ylim)
+    c.set_ylim(ylim)
+    d.set_ylim(ylim)
+    e.set_ylim(ylim)
 
 
 def Analysis():

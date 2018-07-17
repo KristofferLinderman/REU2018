@@ -18,6 +18,7 @@ intended_emotions = ['Joy', 'Sadness', 'Anger', 'Fear', 'Surprise']
 
 final_columns = ['User', 'Video', 'Intended_emotion',
                  'Pulse_derivative_min', 'Pulse_derivative_max', 'Pulse_derivative_average', 'Pulse_derivative_median', 'Pulse_derivative_standard_deviation',
+                 'Pulse_derivative_abs_min', 'Pulse_derivative_abs_max', 'Pulse_derivative_abs_average', 'Pulse_derivative_abs_median', 'Pulse_derivative_abs_standard_deviation',
                  'Pulse_derivative_direction_min', 'Pulse_derivative_direction_max', 'Pulse_derivative_direction_average', 'Pulse_derivative_direction_median', 'Pulse_derivative_direction_standard_deviation',
                  'Engagement_min', 'Engagement_max', 'Engagement_average', 'Engagement_median', 'Engagement_standard_deviation',
                  'Attention_min', 'Attention_max', 'Attention_average', 'Attention_median', 'Attention_standard_deviation',
@@ -35,7 +36,7 @@ final_columns = ['User', 'Video', 'Intended_emotion',
 
 characteristics = ['_min', '_max', '_average', '_median', '_standard_deviation']
 
-features = ['Pulse_derivative', 'Pulse_derivative_direction', 'Engagement', 'Attention','Valence',
+features = ['Pulse_derivative', 'Pulse_derivative_abs', 'Pulse_derivative_direction', 'Engagement', 'Attention','Valence',
             'Anger', 'Sadness', 'Disgust', 'Joy', 'Surprise', 'Fear', 'Contempt', 'Smile']
 
 survey_corresponding_to_stimulus = {'Team6VideoSurvey-13': 'Shining',
