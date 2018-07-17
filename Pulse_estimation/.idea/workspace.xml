@@ -19,8 +19,8 @@
           <file leaf-file-name="Analysis.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Analysis/Analysis.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="3195">
-                  <caret line="215" column="23" lean-forward="false" selection-start-line="215" selection-start-column="23" selection-end-line="215" selection-end-column="23" />
+                <state relative-caret-position="698">
+                  <caret line="216" column="44" lean-forward="false" selection-start-line="216" selection-start-column="44" selection-end-line="216" selection-end-column="44" />
                   <folding>
                     <element signature="e#0#16#0" expanded="true" />
                   </folding>
@@ -38,11 +38,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="preprocessing.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="preprocessing.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/preprocessing/preprocessing.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1380">
-                  <caret line="101" column="63" lean-forward="false" selection-start-line="101" selection-start-column="63" selection-end-line="101" selection-end-column="63" />
+                <state relative-caret-position="330">
+                  <caret line="181" column="43" lean-forward="false" selection-start-line="181" selection-start-column="43" selection-end-line="181" selection-end-column="43" />
                   <folding>
                     <element signature="e#0#36#0" expanded="true" />
                   </folding>
@@ -50,11 +50,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Decision_tree.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="Decision_tree.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/ML_models/Decision_tree.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="466">
-                  <caret line="46" column="44" lean-forward="true" selection-start-line="46" selection-start-column="44" selection-end-line="46" selection-end-column="44" />
+                <state relative-caret-position="705">
+                  <caret line="47" column="4" lean-forward="false" selection-start-line="47" selection-start-column="4" selection-end-line="47" selection-end-column="4" />
                   <folding>
                     <element signature="e#0#24#0" expanded="true" />
                   </folding>
@@ -66,17 +66,17 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="static_values.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="static_values.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/Analysis/static_values.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="675">
-                  <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+                <state relative-caret-position="555">
+                  <caret line="37" column="53" lean-forward="false" selection-start-line="37" selection-start-column="53" selection-end-line="37" selection-end-column="53" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="load_data.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="load_data.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Analysis/load_data.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="113">
@@ -118,12 +118,12 @@
         <option value="$PROJECT_DIR$/preprocessing/trimming.py" />
         <option value="$PROJECT_DIR$/preprocessing/static_values.py" />
         <option value="$PROJECT_DIR$/preprocessing/load_survey.py" />
-        <option value="$PROJECT_DIR$/Analysis/static_values.py" />
         <option value="$PROJECT_DIR$/Analysis/load_data.py" />
-        <option value="$PROJECT_DIR$/preprocessing/preprocessing.py" />
         <option value="$PROJECT_DIR$/preprocessing/tsv_to_csv.py" />
-        <option value="$PROJECT_DIR$/Analysis/Analysis.py" />
         <option value="$PROJECT_DIR$/ML_models/Decision_tree.py" />
+        <option value="$PROJECT_DIR$/Analysis/Analysis.py" />
+        <option value="$PROJECT_DIR$/Analysis/static_values.py" />
+        <option value="$PROJECT_DIR$/preprocessing/preprocessing.py" />
       </list>
     </option>
   </component>
@@ -147,7 +147,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -170,6 +169,7 @@
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -197,7 +197,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Decision_tree">
+  <component name="RunManager" selected="Python.Analysis">
     <configuration name="Analysis" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -360,8 +360,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.Decision_tree" />
-        <item index="1" class="java.lang.String" itemvalue="Python.Analysis" />
+        <item index="0" class="java.lang.String" itemvalue="Python.Analysis" />
+        <item index="1" class="java.lang.String" itemvalue="Python.Decision_tree" />
         <item index="2" class="java.lang.String" itemvalue="Python.preprocessing" />
         <item index="3" class="java.lang.String" itemvalue="Python.tsv_to_csv" />
         <item index="4" class="java.lang.String" itemvalue="Python.get_pulse" />
@@ -393,7 +393,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29677418" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29677418" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18020834" sideWeight="0.50630915" order="2" side_tool="true" content_ui="tabs" />
@@ -714,34 +714,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Analysis/static_values.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/preprocessing/preprocessing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1380">
-          <caret line="101" column="63" lean-forward="false" selection-start-line="101" selection-start-column="63" selection-end-line="101" selection-end-column="63" />
-          <folding>
-            <element signature="e#0#36#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Analysis/Analysis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3195">
-          <caret line="215" column="23" lean-forward="false" selection-start-line="215" selection-start-column="23" selection-end-line="215" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Analysis/load_data.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="113">
@@ -754,10 +726,38 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ML_models/Decision_tree.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="466">
-          <caret line="46" column="44" lean-forward="true" selection-start-line="46" selection-start-column="44" selection-end-line="46" selection-end-column="44" />
+        <state relative-caret-position="705">
+          <caret line="47" column="4" lean-forward="false" selection-start-line="47" selection-start-column="4" selection-end-line="47" selection-end-column="4" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Analysis/Analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="698">
+          <caret line="216" column="44" lean-forward="false" selection-start-line="216" selection-start-column="44" selection-end-line="216" selection-end-column="44" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Analysis/static_values.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="555">
+          <caret line="37" column="53" lean-forward="false" selection-start-line="37" selection-start-column="53" selection-end-line="37" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/preprocessing/preprocessing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="181" column="43" lean-forward="false" selection-start-line="181" selection-start-column="43" selection-end-line="181" selection-end-column="43" />
+          <folding>
+            <element signature="e#0#36#0" expanded="true" />
           </folding>
         </state>
       </provider>

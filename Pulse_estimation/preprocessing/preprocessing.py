@@ -163,8 +163,11 @@ def create_final_sheet_for_subject(working_directory, subject_id):
 
     pulse_derivative_collection = take_derivative_of_pulse(pulse_collection, pulse_time_collection)
 
+    pulse_derivative_abs_collection = []
     pulse_derivative_direction_collection = []
     for i in range(len(pulse_derivative_collection)):
+        # create a list that is the absolute value for the derivative
+        pulse_derivative_abs_collection.append([abs(val) for val in pulse_derivative_collection[i]])
         # create a list that is only -1/0/+1 for the derivative
         pulse_derivative_direction_collection.append([(val / (abs(val) if not val == 0 else 1)) for val in pulse_derivative_collection[i]])
 
@@ -173,6 +176,11 @@ def create_final_sheet_for_subject(working_directory, subject_id):
         characteristics_values = calculate_characteristic(pulse_derivative_collection[i])
         for j in range(5):
             data_dict['Pulse_derivative' + characteristics[j]].append(characteristics_values[j])
+
+        characteristics_values = calculate_characteristic(pulse_derivative_abs_collection[i])
+        for j in range(5):
+            data_dict['Pulse_derivative_abs' + characteristics[j]].append(characteristics_values[j])
+
         characteristics_values = calculate_characteristic(pulse_derivative_direction_collection[i])
         for j in range(5):
             data_dict['Pulse_derivative_direction' + characteristics[j]].append(characteristics_values[j])

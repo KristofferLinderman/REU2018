@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from static_values import *
 
 
-def bar_diagram_video_rating(data):
+def bar_diagram_video_rating(data, figure_number):
     names = stimuli_id.keys()
     names = sorted(names, key=lambda name: stimuli_id[name])
 
@@ -19,32 +19,30 @@ def bar_diagram_video_rating(data):
                 if s == i:
                     scores[name][i - 1] = scores[name][i - 1] + 1
 
-    plt.figure(1)
+    plt.figure(figure_number)
     for i in range(len(names)):
         plt.subplot(3, 5, i + 1)
         plt.title('Rating of \"' + names[i] + '\"')
         plt.bar([1, 2, 3, 4, 5], scores[names[i]])
     plt.subplots_adjust(top=0.92, bottom=0.08)
-    plt.show()
 
 
-def box_pulse_video(data):
+def box_pulse_video(data, figure_number):
     names = stimuli_id.keys()
     names = sorted(names, key=lambda name: stimuli_id[name])
     pulse = []
     for name in names:
         pulse.append(data.get_column_for_video('Pulse_derivative_average', name))
 
-    plt.figure(1)
+    plt.figure(figure_number)
     plt.boxplot(pulse)
     names = [(name + '\n' + intended_emotions[((stimuli_id[name] - 1) / 3)]) for name in names]
     plt.axes().set_xticklabels(names)
     plt.axes().set_title('Is there a correlation between the average change in pulse during a video and the video category?')
     plt.axes().set_ylabel('average change in pulse during video [bpm/s]')
-    plt.show()
 
 
-def box_pulse_score(data):
+def box_pulse_score(data, figure_number):
     names = stimuli_id.keys()
     names = sorted(names, key=lambda name: stimuli_id[name])
     pulse = []
@@ -57,17 +55,16 @@ def box_pulse_score(data):
     for i in range(1, 6):
         pulse_new.append([pulse[j] for j in range(len(pulse)) if scores[j] == i])
 
-    plt.figure(1)
+    plt.figure(figure_number)
     plt.boxplot(pulse_new)
     names = [1, 2, 3, 4, 5]
     plt.axes().set_xticklabels(names)
     plt.axes().set_title('Is there a correlation between the pulse derivative average and the score given')
     plt.axes().set_ylabel('average change in pulse during video [bpm/s]')
     plt.axes().set_xlabel('Score')
-    plt.show()
 
 
-def scatter_pulse_score(data):
+def scatter_pulse_score(data, figure_number):
     names = stimuli_id.keys()
     names = sorted(names, key=lambda name: stimuli_id[name])
     pulse = []
@@ -76,12 +73,11 @@ def scatter_pulse_score(data):
         pulse.extend(data.get_column_for_video('Pulse_derivative_average', name))
         scores.extend(data.get_column_for_video('One a scale of 1 to 5, how would you rate the video?', name))
 
-    plt.figure(1)
+    plt.figure(figure_number)
     plt.scatter(scores, pulse)
-    plt.show()
 
 
-def scatter_genre_scores(data):
+def scatter_genre_scores(data, figure_number):
     names = stimuli_id.keys()
     names = sorted(names, key=lambda name: stimuli_id[name])
     scores = []
@@ -96,10 +92,13 @@ def scatter_genre_scores(data):
         scores_genre[i].extend(scores[(i * 3) + 2])
 
     scores_amount_genre = []
+    annotation = []
     for i in range(5):
         scores_amount_genre.append([])
+        annotation.append([])
         for j in range(5):
-            scores_amount_genre[i].append(scores_genre[i].count((j + 1))**2.5)
+            scores_amount_genre[i].append(scores_genre[i].count((j + 1)) ** 2.5)
+            annotation[i].append(scores_genre[i].count((j + 1)))
 
     print(scores_amount_genre)
     genres = []
@@ -109,16 +108,20 @@ def scatter_genre_scores(data):
     genres = [[i + 1 for j in range(5)] for i in range(5)]
     scores = [[j + 1 for j in range(5)] for i in range(5)]
     print genres
-    plt.figure(1)
+    plt.figure(figure_number)
     plt.scatter(genres, scores, s=scores_amount_genre)
     plt.axes().set_title('Is there a correleation between the average score for a video and the rating given?')
     plt.axes().set_ylabel('Score')
     plt.axes().set_xticklabels(intended_emotions)
     plt.axes().set_xticks([1, 2, 3, 4, 5])
-    plt.show()
+    for i in range(5):
+        for j in range(5):
+            if annotation[i][j] == 0:
+                continue
+            plt.axes().annotate(annotation[i][j], xy=(i + 1, j + 1))
 
 
-def box_joy_video(data):
+def box_joy_video(data, figure_number):
     names = stimuli_id.keys()
     names = sorted(names, key=lambda name: stimuli_id[name])
 
@@ -126,13 +129,12 @@ def box_joy_video(data):
     for i in range(len(names)):
         joy.append(data.get_column_for_video('Joy_average', names[i]))
 
-    plt.figure(1)
+    plt.figure(figure_number)
     plt.boxplot(joy)
     plt.axes().set_xticklabels(names)
-    plt.show()
 
 
-def hist_emotion_facial_expressions(data):
+def hist_emotion_facial_expressions(data, figure_number):
     names = stimuli_id.keys()
     names = sorted(names, key=lambda name: stimuli_id[name])
 
@@ -181,7 +183,7 @@ def hist_emotion_facial_expressions(data):
     for i in range(len(intended_emotions)):
         facial_expressions_for_Surprise[i] = sum(facial_expressions_for_Surprise[i]) / len(facial_expressions_for_Surprise[i])
 
-    plt.figure(1)
+    plt.figure(figure_number)
 
     plt.subplot(1, 5, 1)
     plt.bar(intended_emotions, facial_expressions_for_Joy)
@@ -203,18 +205,17 @@ def hist_emotion_facial_expressions(data):
     plt.bar(intended_emotions, facial_expressions_for_Surprise)
     plt.title('Surprising video')
 
-    plt.show()
-
 
 def Analysis():
     data = load_data.Data('/home/gustaf/Downloads/data/final/')
-    bar_diagram_video_rating(data)
-    box_pulse_video(data)
-    box_pulse_score(data)
-    scatter_pulse_score(data)
-    scatter_genre_scores(data)
-    box_joy_video(data)
-    hist_emotion_facial_expressions(data)
+    bar_diagram_video_rating(data, 1)
+    box_pulse_video(data, 2)
+    box_pulse_score(data, 3)
+    scatter_pulse_score(data, 4)
+    scatter_genre_scores(data, 5)
+    box_joy_video(data, 6)
+    hist_emotion_facial_expressions(data, 7)
+    plt.show()
 
 
 if __name__ == '__main__':

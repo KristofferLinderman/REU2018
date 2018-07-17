@@ -42,10 +42,10 @@ def cross_validation(clf, data_X, data_y, folds):
 
 def main():
     data_X, data_y = load_data('/home/gustaf/Downloads/data/final/')
-    clf = tree.DecisionTreeClassifier()
+    clf = tree.DecisionTreeClassifier(max_depth=3)
     clf = clf.fit(data_X, data_y)
     cross_validation(clf, data_X, data_y, 5)
-    #plot_tree(clf)
+    plot_tree(clf)
 
 
 if __name__ == '__main__':
