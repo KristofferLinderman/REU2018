@@ -479,9 +479,6 @@ def preprocess():
     excluded_subject = -1
     working_directory = config['DATA_DIRECTORY']
 
-    create_master_sheet(working_directory + 'final/', excluded_subject)
-    return
-
     os.chdir(working_directory)
     res = [re.search('\d\d\d_\d*', f) for f in os.listdir('.')]
     res = [r.group() for r in res if r]
