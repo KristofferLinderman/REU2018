@@ -105,6 +105,9 @@ def calculate_characteristic(values):
     '''
     values = [float(val) for val in values]
 
+    if len(values) == 0:
+        return 0, 0, 0, 0, 0
+
     min_val = min(values)
     max_val = max(values)
 
@@ -130,6 +133,13 @@ def take_derivative_of_pulse(pulse_collection, pulse_time_collection):
             pulse_derivative[i].append(((pulse_collection[i][j] - pulse_collection[i][j - 1]) / (pulse_time_collection[i][j] - pulse_time_collection[i][j - 1])) * 1000)
     return pulse_derivative
 
+
+def take_derivative_of_pulse_for_video(pulse_collection, pulse_time_collection):
+    pulse_derivative = [0]
+    for i in range(1, len(pulse_collection)):
+        pulse_derivative.append(((pulse_collection[i] - pulse_collection[i - 1]) / (pulse_time_collection[i] - pulse_time_collection[i - 1])) * 1000)
+
+    return pulse_derivative
 
 def create_final_sheet_for_subject(working_directory, subject_id):
     '''
@@ -214,6 +224,127 @@ def create_final_sheet_for_subject(working_directory, subject_id):
     pd.DataFrame(data_dict)[final_columns].to_csv(str(subject_id) + '.csv')
 
 
+def find_instances_for_subject_for_video(subject_id, video, threshold):
+    pulse_collection = pd.read_csv('pulse_' + video + '_' + str(subject_id) + '_trimmed.csv')['Pulse']
+    pulse_time_collection = pd.read_csv('pulse_' + video + '_' + str(subject_id) + '_trimmed.csv')['Timestamp']
+
+    pulse_derivative_collection = take_derivative_of_pulse_for_video(pulse_collection, pulse_time_collection)
+
+    pulse_derivative_abs_collection = [abs(val) for val in pulse_derivative_collection]
+
+    interesting_timestamps = [pulse_time_collection[i] for i in range(len(pulse_derivative_abs_collection)) if pulse_derivative_abs_collection[i] >= threshold]
+
+    return interesting_timestamps
+
+
+def trim_for_timestamp(timestamp, collection, time_collection):
+    return [collection[i] for i in range(len(collection)) if timestamp[0] <= time_collection[i] <= timestamp[1]]
+
+
+def create_instances_for_video(working_directory, subject_id, video_id, threshold):
+    os.chdir(working_directory)
+    interesting_timestamps = find_instances_for_subject_for_video(subject_id, id_stimuli[video_id + 1], threshold)
+    pulse_collection = pd.read_csv('pulse_' + id_stimuli[video_id + 1] + '_' + str(subject_id) + '_trimmed.csv')['Pulse']
+    pulse_time_collection = pd.read_csv('pulse_' + id_stimuli[video_id + 1] + '_' + str(subject_id) + '_trimmed.csv')['Timestamp']
+    answers = get_survey_answers_for_subject(working_directory, subject_id)[id_stimuli[video_id + 1]]
+    data_dict = {}
+
+    data_dict['User'] = []
+    data_dict['Video'] = []
+    data_dict['Intended_emotion'] = []
+
+    for question in survey_questions.values():
+        data_dict[question] = []
+
+    for feature in features:
+        for characteristic in characteristics:
+            data_dict[feature + characteristic] = []
+
+    pulse_derivative_collection = take_derivative_of_pulse_for_video(pulse_collection, pulse_time_collection)
+
+    pulse_derivative_abs_collection = [abs(val) for val in pulse_derivative_collection]
+
+    pulse_derivative_direction_collection = [(val / (abs(val) if not val == 0 else 1)) for val in pulse_derivative_collection]
+
+    df = pd.read_csv(id_stimuli[video_id + 1] + '_' + str(subject_id) + '.csv')
+
+    facial_features = {}
+    for column in relevant_final_columns:
+        facial_features[column] = ([float(val) for val in df[column] if not np.isnan(val)])
+
+    for timestamp in interesting_timestamps:
+        timestamp = timestamp - 5000 if (timestamp - 5000) >= pulse_time_collection[0] else pulse_time_collection[0]
+        timestamp = (timestamp, timestamp + 10000 if (timestamp + 10000) <= pulse_time_collection[len(pulse_time_collection) - 1] else pulse_time_collection[len(pulse_time_collection) - 1])
+
+        #pulse_collection_for_timestamp = trim_for_timestamp(timestamp, pulse_collection, pulse_time_collection)
+        pulse_derivative_collection_for_timestamp = trim_for_timestamp(timestamp, pulse_derivative_collection, pulse_time_collection)
+        pulse_derivative_abs_collection_for_timestamp = trim_for_timestamp(timestamp, pulse_derivative_abs_collection, pulse_time_collection)
+        pulse_derivative_direction_collection_for_timestamp = trim_for_timestamp(timestamp, pulse_derivative_direction_collection, pulse_time_collection)
+
+        facial_features_for_timestamp = facial_features.copy()
+        for column in facial_features_for_timestamp.keys():
+            facial_features_for_timestamp[column] = trim_for_timestamp(timestamp, facial_features[column], df['Timestamp'])
+
+        data_dict['User'].append(subject_id)
+        data_dict['Video'].append(video_id + 1)
+        data_dict['Intended_emotion'].append(intended_emotions[(video_id / 3)])
+
+        characteristics_values = calculate_characteristic(pulse_derivative_collection_for_timestamp)
+        for i in range(5):
+            data_dict['Pulse_derivative' + characteristics[i]].append(characteristics_values[i])
+
+        characteristics_values = calculate_characteristic(pulse_derivative_abs_collection_for_timestamp)
+        for i in range(5):
+            data_dict['Pulse_derivative_abs' + characteristics[i]].append(characteristics_values[i])
+
+        characteristics_values = calculate_characteristic(pulse_derivative_direction_collection_for_timestamp)
+        for i in range(5):
+            data_dict['Pulse_derivative_direction' + characteristics[i]].append(characteristics_values[i])
+
+        for facial_feature in facial_features_for_timestamp.keys():
+            characteristics_values = calculate_characteristic(facial_features_for_timestamp[facial_feature])
+            for i in range(5):
+                data_dict[facial_feature + characteristics[i]].append(characteristics_values[i])
+
+        for question in survey_questions.values():
+            if question == 'What did you feel when watching the video?':
+                Q3_answer = str(answers[question][0])
+                if len(answers[question]) > 1:
+                    for j in range(1, len(answers[question])):
+                        Q3_answer = Q3_answer + ' ' + str(answers[question][j])
+                data_dict[question].append(Q3_answer)
+                continue
+            data_dict[question].append(answers[question][0])
+
+    for column in final_columns:
+        print column + ': ' + str(data_dict[column])
+
+    return data_dict
+
+
+def create_final_sheet_for_subject_using_pulse_as_instances(working_directory, subject_id, threshold, allow_overlapping=True):
+    os.chdir(working_directory)
+    data_dict = {}
+
+    data_dict['User'] = []
+    data_dict['Video'] = []
+    data_dict['Intended_emotion'] = []
+    # add a list for each feature
+    for feature in features:
+        for characteristic in characteristics:
+            data_dict[feature + characteristic] = []
+
+    for question in survey_questions.keys():
+        data_dict[survey_questions[question]] = []
+
+    for i in range(15):
+        video_instances = create_instances_for_video(working_directory, subject_id, i, threshold)
+        instances = len(video_instances['User'])
+        for j in range(instances):
+            for column in final_columns:
+                data_dict[column].append(video_instances[column][j])
+    pd.DataFrame(data_dict)[final_columns].to_csv(str(subject_id) + '_with_instances.csv')
+
 def organize(subject_id, main_filename):
     '''
     Organizes the files into a folder for the subject
@@ -245,11 +376,12 @@ def organize(subject_id, main_filename):
         os.system('mv ' + stimulus.replace(' ', '\ ') + '_' + str(subject_id) + '.csv facial_files_trimmed')
 
 
-def create_master_sheet(working_directory):
+def create_master_sheet(working_directory, excluded_subject):
     '''
     Creates a sheet which contains all data from all participants
 
     :param working_directory: The directory containing the final sheet for each participant
+    :param excluded_subject: The subject that should be excluded during the training
     :return: None
     '''
     os.chdir(working_directory)
@@ -257,33 +389,43 @@ def create_master_sheet(working_directory):
     for column in final_columns:
         master_sheet[column] = []
     files = os.listdir('.')
-    files = sorted(files, key=lambda file : int(file.replace('.csv', '')))
-    for file in files:
-        df = pd.read_csv(file)
+    files = sorted(files, key=lambda filename : int(filename.replace('.csv', '')))
+    for filename in files:
+        if filename == (str(excluded_subject) + '.csv'):  # exclude one subject in final document
+            continue
+        df = pd.read_csv(filename)
         for column in final_columns:
             master_sheet[column].extend(df[column])
     pd.DataFrame(master_sheet)[final_columns].to_csv('master.csv')
 
 
-def plot_data(datapoints):
+def plot_pulse(pulse, time, markers=[], figurenum=1, do_plot=True):
     '''
     Plot a set of datapoints
 
     :param datapoints: the datapoints to plot in a list
     :return: None
     '''
-    plt.plot(np.arange(0, len(datapoints)), datapoints)
-    plt.show()
+    plt.figure(figurenum)
+    plt.plot(time, pulse)
+    max_pulse = max(pulse) + 10
+    for marker in markers:
+        x = np.arange(marker, marker + 10000)
+        plt.axes().fill_between(x, ([0 for i in range(len(x))]), ([max_pulse for i in range(len(x))]), color='r', alpha=0.5)
+        plt.plot([marker, marker], [max_pulse, 0], color='k', linestyle='-', lw=1, alpha=1)
+    if do_plot:
+        plt.show()
 
 
 def load_config():
     config = {}
-    with open('./preprocessing/config.txt', 'r') as f:
+    with open('config.txt', 'r') as f:
         for line in f:
             parts = line.replace('\n', '').split('=')
             config[parts[0]] = parts[1] if not parts[1] == '' else None
     print config
     return config
+
 
 def preprocess():
     '''
@@ -296,9 +438,11 @@ def preprocess():
     '''
 
     config = load_config()
-
     excluded_subject = -1
     working_directory = config['DATA_DIRECTORY']
+
+    create_final_sheet_for_subject_using_pulse_as_instances(working_directory, 1, 20)
+    return
 
     os.chdir(working_directory)
     res = [re.search('\d\d\d_\d*', f) for f in os.listdir('.')]
@@ -309,7 +453,7 @@ def preprocess():
         excluded_subject = random.randint(1, participants)
 
     for i in range(1, participants + 1):
-        if i == 4 or i == 20 or i == 23 or i == 28 or excluded_subject:  # these have faulty pulse files
+        if i == 4 or i == 20 or i == 23 or i == 28:  # these have faulty pulse files
             continue
         print str(i) + '/' + str(participants)
         filename = ('0' + str(participants + 1 - i) + '_' + str(i) + '.csv')
@@ -324,14 +468,19 @@ def preprocess():
             trim_pulse_log_for_stimulus(working_directory, i, timestamps)
             trim_facial_data(working_directory, i, df, experiment_time)
             # survey_duration = get_survey_duration(df)  # data already exist in timestamps
-            create_final_sheet_for_subject(working_directory, i)
-            organize(i, filename)
+
+
+
+            #create_final_sheet_for_subject(working_directory, i)
+            #organize(i, filename)
             os.chdir(working_directory)
         else:
             print 'data for participant ' + str(i) + ' is missing, skipping that participant'
             continue
+        if i == 1:
+            return
 
-    create_master_sheet(working_directory + 'final/')
+    create_master_sheet(working_directory + 'final/', excluded_subject)
 
 
 if __name__ == "__main__":
