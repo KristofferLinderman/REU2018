@@ -1,3 +1,4 @@
-DATA_DIRECTORY=/home/gustaf/Downloads/17_july/data_new/
+DATA_DIRECTORY=/home/gustaf/Downloads/17_july/data/
 LEAVE_ONE_SUBJECT_OUT=
 LEAVE_ONE_VIDEO_OUT=
+THRESHOLD=20

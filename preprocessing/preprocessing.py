@@ -316,9 +316,6 @@ def create_instances_for_video(working_directory, subject_id, video_id, threshol
                 continue
             data_dict[question].append(answers[question][0])
 
-    for column in final_columns:
-        print column + ': ' + str(data_dict[column])
-
     return data_dict
 
 
@@ -363,6 +360,7 @@ def organize(subject_id, main_filename):
         os.system('mv ' + stimulus.replace(' ', '\ ') + '_' + str(subject_id) + '.csv ' + str(subject_id))
         os.system('mv ' + main_filename + ' ' + str(subject_id))
         os.system('mv ' + str(subject_id) + '.csv final')
+        os.system('mv ' + str(subject_id) + '_with_instances.csv final')
     try:
         os.chdir(str(subject_id))
         os.mkdir('pulse_files')
@@ -389,14 +387,54 @@ def create_master_sheet(working_directory, excluded_subject):
     for column in final_columns:
         master_sheet[column] = []
     files = os.listdir('.')
-    files = sorted(files, key=lambda filename : int(filename.replace('.csv', '')))
+    files_with_instances = []
+    original_files = []
     for filename in files:
+        if 'master' in filename:
+            continue
+        elif 'with_instances' in filename:
+            files_with_instances.append(filename)
+        else:
+            original_files.append(filename)
+    files_with_instances = sorted(files_with_instances, key=lambda filename: int(filename.replace('_with_instances.csv', '')))
+    original_files = sorted(original_files, key=lambda filename: int(filename.replace('.csv', '')))
+    for filename in original_files:
         if filename == (str(excluded_subject) + '.csv'):  # exclude one subject in final document
             continue
         df = pd.read_csv(filename)
         for column in final_columns:
             master_sheet[column].extend(df[column])
+
     pd.DataFrame(master_sheet)[final_columns].to_csv('master.csv')
+    master_sheet = {}
+    for column in final_columns:
+        master_sheet[column] = []
+
+    for filename in files_with_instances:
+        if filename == (str(excluded_subject) + '_with_instances.csv'):  # exclude one subject in final document
+            continue
+        df = pd.read_csv(filename)
+        for column in final_columns:
+            master_sheet[column].extend(df[column])
+
+    pd.DataFrame(master_sheet)[final_columns].to_csv('master_with_instances.csv')
+
+    new_master_sheet = {}
+    for column in final_columns:
+        new_master_sheet[column] = []
+
+    for i in range(len(master_sheet['User'])):
+        has_data = False
+        for column in relevant_final_columns:
+            for characteristic in characteristics:
+                if not master_sheet[column + characteristic][i] == 0:
+                    has_data = True
+        if has_data:
+            for column in final_columns:
+                new_master_sheet[column].append(master_sheet[column][i])
+
+    pd.DataFrame(new_master_sheet)[final_columns].to_csv('master_with_instances_removed_0.csv')
+
 
 
 def plot_pulse(pulse, time, markers=[], figurenum=1, do_plot=True):
@@ -441,7 +479,7 @@ def preprocess():
     excluded_subject = -1
     working_directory = config['DATA_DIRECTORY']
 
-    create_final_sheet_for_subject_using_pulse_as_instances(working_directory, 1, 20)
+    create_master_sheet(working_directory + 'final/', excluded_subject)
     return
 
     os.chdir(working_directory)
@@ -453,7 +491,7 @@ def preprocess():
         excluded_subject = random.randint(1, participants)
 
     for i in range(1, participants + 1):
-        if i == 4 or i == 20 or i == 23 or i == 28:  # these have faulty pulse files
+        if i == 4 or i == 20 or i == 23 or i == 28 or i == 32:  # these have faulty pulse files
             continue
         print str(i) + '/' + str(participants)
         filename = ('0' + str(participants + 1 - i) + '_' + str(i) + '.csv')
@@ -468,17 +506,13 @@ def preprocess():
             trim_pulse_log_for_stimulus(working_directory, i, timestamps)
             trim_facial_data(working_directory, i, df, experiment_time)
             # survey_duration = get_survey_duration(df)  # data already exist in timestamps
-
-
-
-            #create_final_sheet_for_subject(working_directory, i)
-            #organize(i, filename)
+            create_final_sheet_for_subject(working_directory, i)
+            create_final_sheet_for_subject_using_pulse_as_instances(working_directory, i, int(config['THRESHOLD']) if config['THRESHOLD'] else 20)
+            organize(i, filename)
             os.chdir(working_directory)
         else:
             print 'data for participant ' + str(i) + ' is missing, skipping that participant'
             continue
-        if i == 1:
-            return
 
     create_master_sheet(working_directory + 'final/', excluded_subject)
 
