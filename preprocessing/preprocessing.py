@@ -501,15 +501,19 @@ def create_master_sheet(working_directory, excluded_subject):
         master_sheet[column] = []
     files = os.listdir('.')
     files_with_instances = []
+    files_with_end_instances = []
     original_files = []
     for filename in files:
         if 'master' in filename:
             continue
+        elif 'with_end_instances' in filename:
+            files_with_end_instances.append(filename)
         elif 'with_instances' in filename:
             files_with_instances.append(filename)
         else:
             original_files.append(filename)
     files_with_instances = sorted(files_with_instances, key=lambda filename: int(filename.replace('_with_instances.csv', '')))
+    files_with_end_instances = sorted(files_with_end_instances, key=lambda filename: int(filename.replace('_with_end_instances.csv', '')))
     original_files = sorted(original_files, key=lambda filename: int(filename.replace('.csv', '')))
     for filename in original_files:
         if filename == (str(excluded_subject) + '.csv'):  # exclude one subject in final document
@@ -519,6 +523,7 @@ def create_master_sheet(working_directory, excluded_subject):
             master_sheet[column].extend(df[column])
 
     pd.DataFrame(master_sheet)[final_columns].to_csv('master.csv')
+
     master_sheet = {}
     for column in final_columns:
         master_sheet[column] = []
@@ -548,6 +553,18 @@ def create_master_sheet(working_directory, excluded_subject):
 
     pd.DataFrame(new_master_sheet)[final_columns].to_csv('master_with_instances_removed_0.csv')
 
+    master_sheet = {}
+    for column in final_columns:
+        master_sheet[column] = []
+
+    for filename in files_with_end_instances:
+        if filename == (str(excluded_subject) + '_with_end_instances.csv'):  # exclude one subject in final document
+            continue
+        df = pd.read_csv(filename)
+        for column in final_columns:
+            master_sheet[column].extend(df[column])
+
+    pd.DataFrame(master_sheet)[final_columns].to_csv('master_with_end_instances.csv')
 
 
 def plot_pulse(pulse, time, markers=[], figurenum=1, do_plot=True):
