@@ -58,6 +58,7 @@ all_columns_all_characteristics = ['Pulse_derivative_min', 'Pulse_derivative_max
 def cross_validation(clf, data_X, data_y, folds, name):
     scores = cross_val_score(clf, data_X, data_y, cv=folds)
     print(name + " Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+    return scores
 
 
 def load_data(working_directory, filename, columns, question):

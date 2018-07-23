@@ -237,12 +237,23 @@ def find_instances_for_subject_for_video(subject_id, video, threshold):
     return interesting_timestamps
 
 
-def trim_for_timestamp(timestamp, collection, time_collection):
-    return [collection[i] for i in range(len(collection)) if timestamp[0] <= time_collection[i] <= timestamp[1]]
+def trim_for_timestamp(timestamp, collection, time_collection=None):
+    if not time_collection is None:
+        return [collection[i] for i in range(len(collection)) if timestamp[0] <= time_collection[i] <= timestamp[1]]
+    return [collection[i][0] for i in range(len(collection)) if timestamp[0] <= collection[i][1] <= timestamp[1]]
 
 
-def trim_for_end(duration, collection, time_collection):
-    return [collection[i] for i in range(len(collection)) if time_collection[i] >= (time_collection[len(time_collection) - 1] - duration)]
+def trim_for_end(duration, collection, time_collection=None):
+    if not time_collection is None:
+        return [collection[i] for i in range(len(collection)) if time_collection[i] >= (time_collection[len(time_collection) - 1] - duration)]
+    new_collection = []
+    for i in range(len(collection)):
+        t = collection[i][1]
+        start_end = collection[len(collection) - 1][1] - duration
+        if t >= start_end:
+            new_collection.append(collection[i][0])
+    #new_collection = [collection[i][0] for i in range(len(collection)) if collection[i][1] >= (collection[len(collection) - 1][1] - duration)]
+    return new_collection
 
 
 def create_instances_for_video(working_directory, subject_id, video_id, threshold):
@@ -274,7 +285,7 @@ def create_instances_for_video(working_directory, subject_id, video_id, threshol
 
     facial_features = {}
     for column in relevant_final_columns:
-        facial_features[column] = ([float(val) for val in df[column] if not np.isnan(val)])
+        facial_features[column] = ([(float(df[column][i]), df['Timestamp'][i]) for i in range(len(df[column])) if not np.isnan(df[column][i])])
 
     for timestamp in interesting_timestamps:
         timestamp = timestamp - 5000 if (timestamp - 5000) >= pulse_time_collection[0] else pulse_time_collection[0]
@@ -287,7 +298,7 @@ def create_instances_for_video(working_directory, subject_id, video_id, threshol
 
         facial_features_for_timestamp = facial_features.copy()
         for column in facial_features_for_timestamp.keys():
-            facial_features_for_timestamp[column] = trim_for_timestamp(timestamp, facial_features[column], df['Timestamp'])
+            facial_features_for_timestamp[column] = trim_for_timestamp(timestamp, facial_features[column])
 
         data_dict['User'].append(subject_id)
         data_dict['Video'].append(video_id + 1)
@@ -352,7 +363,7 @@ def create_end_instance_for_video(working_directory, subject_id, video_id, durat
 
     facial_features = {}
     for column in relevant_final_columns:
-        facial_features[column] = ([float(val) for val in df[column] if not np.isnan(val)])
+        facial_features[column] = ([(float(df[column][i]), df['Timestamp'][i]) for i in range(len(df[column])) if not np.isnan(df[column][i])])
 
     pulse_derivative_collection_for_end = trim_for_end(duration, pulse_derivative_collection, pulse_time_collection)
     pulse_derivative_abs_collection_for_end = trim_for_end(duration, pulse_derivative_abs_collection, pulse_time_collection)
@@ -360,7 +371,7 @@ def create_end_instance_for_video(working_directory, subject_id, video_id, durat
 
     facial_features_for_timestamp = facial_features.copy()
     for column in facial_features_for_timestamp.keys():
-        facial_features_for_timestamp[column] = trim_for_end(duration, facial_features[column], df['Timestamp'])
+        facial_features_for_timestamp[column] = trim_for_end(duration, facial_features[column])
 
     data_dict['User'].append(subject_id)
     data_dict['Video'].append(video_id + 1)
@@ -490,15 +501,19 @@ def create_master_sheet(working_directory, excluded_subject):
         master_sheet[column] = []
     files = os.listdir('.')
     files_with_instances = []
+    files_with_end_instances = []
     original_files = []
     for filename in files:
         if 'master' in filename:
             continue
+        elif 'with_end_instances' in filename:
+            files_with_end_instances.append(filename)
         elif 'with_instances' in filename:
             files_with_instances.append(filename)
         else:
             original_files.append(filename)
     files_with_instances = sorted(files_with_instances, key=lambda filename: int(filename.replace('_with_instances.csv', '')))
+    files_with_end_instances = sorted(files_with_end_instances, key=lambda filename: int(filename.replace('_with_end_instances.csv', '')))
     original_files = sorted(original_files, key=lambda filename: int(filename.replace('.csv', '')))
     for filename in original_files:
         if filename == (str(excluded_subject) + '.csv'):  # exclude one subject in final document
@@ -508,6 +523,7 @@ def create_master_sheet(working_directory, excluded_subject):
             master_sheet[column].extend(df[column])
 
     pd.DataFrame(master_sheet)[final_columns].to_csv('master.csv')
+
     master_sheet = {}
     for column in final_columns:
         master_sheet[column] = []
@@ -537,6 +553,18 @@ def create_master_sheet(working_directory, excluded_subject):
 
     pd.DataFrame(new_master_sheet)[final_columns].to_csv('master_with_instances_removed_0.csv')
 
+    master_sheet = {}
+    for column in final_columns:
+        master_sheet[column] = []
+
+    for filename in files_with_end_instances:
+        if filename == (str(excluded_subject) + '_with_end_instances.csv'):  # exclude one subject in final document
+            continue
+        df = pd.read_csv(filename)
+        for column in final_columns:
+            master_sheet[column].extend(df[column])
+
+    pd.DataFrame(master_sheet)[final_columns].to_csv('master_with_end_instances.csv')
 
 
 def plot_pulse(pulse, time, markers=[], figurenum=1, do_plot=True):
@@ -583,14 +611,16 @@ def preprocess():
 
     os.chdir(working_directory)
 
-    create_final_sheet_for_subject_using_end_as_instances(working_directory, i, int(config['DURATION']))
-
-    return
-
     res = [re.search('\d\d\d_\d*', f) for f in os.listdir('.')]
     res = [r.group() for r in res if r]
     participants = max([int(r[0:3]) for r in res])
 
+    for i in range(1, participants + 1):
+        if i == 4 or i == 20 or i == 23 or i == 28 or i == 32:  # these have faulty pulse files
+            continue
+        create_final_sheet_for_subject_using_pulse_as_instances(working_directory, i, int(config['THRESHOLD']) if config['THRESHOLD'] else 20)
+        create_final_sheet_for_subject_using_end_as_instances(working_directory, i, int(config['DURATION']))
+    return
     #if config['LEAVE_ONE_SUBJECT_OUT'] == 'Y:
     #    excluded_subject = random.randint(1, participants)
 

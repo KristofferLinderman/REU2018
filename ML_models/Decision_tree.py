@@ -16,6 +16,7 @@ def dt(working_directory, filename, columns, question, name, max_depth=None, cro
     else:
         clf = tree.DecisionTreeClassifier()
     clf = clf.fit(data_X, data_y)
-    cross_validation(clf, data_X, data_y, cross_validation_folds, name)
+    scores = cross_validation(clf, data_X, data_y, cross_validation_folds, name)
     if render_tree:
         plot_tree(clf, name)
+    return scores

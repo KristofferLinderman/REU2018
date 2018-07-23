@@ -6,4 +6,5 @@ def rf(working_directory, filename, columns, question, name, cross_validation_fo
     data_X, data_y = load_data(working_directory, filename, columns, question)
     clf = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, min_samples_split=min_samples_split, random_state=random_state)
     clf.fit(data_X, data_y)
-    cross_validation(clf, data_X, data_y, cross_validation_folds, name)
+    scores = cross_validation(clf, data_X, data_y, cross_validation_folds, name)
+    return scores
