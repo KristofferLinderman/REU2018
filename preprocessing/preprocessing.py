@@ -601,7 +601,8 @@ def preprocess():
     for i in range(1, participants + 1):
         if i == 4 or i == 20 or i == 23 or i == 28 or i == 32:  # these have faulty pulse files
             continue
-        create_final_sheet_for_subject_using_end_as_instances(working_directory, 2, int(config['DURATION']))
+        create_final_sheet_for_subject_using_pulse_as_instances(working_directory, i, int(config['THRESHOLD']) if config['THRESHOLD'] else 20)
+        create_final_sheet_for_subject_using_end_as_instances(working_directory, i, int(config['DURATION']))
     return
     #if config['LEAVE_ONE_SUBJECT_OUT'] == 'Y:
     #    excluded_subject = random.randint(1, participants)
