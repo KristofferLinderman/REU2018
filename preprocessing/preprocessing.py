@@ -237,12 +237,23 @@ def find_instances_for_subject_for_video(subject_id, video, threshold):
     return interesting_timestamps
 
 
-def trim_for_timestamp(timestamp, collection, time_collection):
-    return [collection[i] for i in range(len(collection)) if timestamp[0] <= time_collection[i] <= timestamp[1]]
+def trim_for_timestamp(timestamp, collection, time_collection=None):
+    if not time_collection is None:
+        return [collection[i] for i in range(len(collection)) if timestamp[0] <= time_collection[i] <= timestamp[1]]
+    return [collection[i][0] for i in range(len(collection)) if timestamp[0] <= collection[i][1] <= timestamp[1]]
 
 
-def trim_for_end(duration, collection, time_collection):
-    return [collection[i] for i in range(len(collection)) if time_collection[i] >= (time_collection[len(time_collection) - 1] - duration)]
+def trim_for_end(duration, collection, time_collection=None):
+    if not time_collection is None:
+        return [collection[i] for i in range(len(collection)) if time_collection[i] >= (time_collection[len(time_collection) - 1] - duration)]
+    return [collection[i][0] for i in range(len(collection)) if collection[i][1] >= (collection[len(collection) - 1][1] - duration)]
+    #new_collection = []
+    #for i in range(len(collection)):
+    #    t = time_collection[i]
+    #    start_end = time_collection[len(time_collection) - 1] - duration
+    #    if t >= start_end:
+    #        new_collection.append(collection[i])
+    #return new_collection
 
 
 def create_instances_for_video(working_directory, subject_id, video_id, threshold):
@@ -274,7 +285,7 @@ def create_instances_for_video(working_directory, subject_id, video_id, threshol
 
     facial_features = {}
     for column in relevant_final_columns:
-        facial_features[column] = ([float(val) for val in df[column] if not np.isnan(val)])
+        facial_features[column] = ([(float(df[column][i]), df['Timestamp'][i]) for i in range(len(df[column])) if not np.isnan(df[column][i])])
 
     for timestamp in interesting_timestamps:
         timestamp = timestamp - 5000 if (timestamp - 5000) >= pulse_time_collection[0] else pulse_time_collection[0]
@@ -287,7 +298,7 @@ def create_instances_for_video(working_directory, subject_id, video_id, threshol
 
         facial_features_for_timestamp = facial_features.copy()
         for column in facial_features_for_timestamp.keys():
-            facial_features_for_timestamp[column] = trim_for_timestamp(timestamp, facial_features[column], df['Timestamp'])
+            facial_features_for_timestamp[column] = trim_for_timestamp(timestamp, facial_features[column])
 
         data_dict['User'].append(subject_id)
         data_dict['Video'].append(video_id + 1)
@@ -352,7 +363,7 @@ def create_end_instance_for_video(working_directory, subject_id, video_id, durat
 
     facial_features = {}
     for column in relevant_final_columns:
-        facial_features[column] = ([float(val) for val in df[column] if not np.isnan(val)])
+        facial_features[column] = ([(float(df[column][i]), df['Timestamp'][i]) for i in range(len(df[column])) if not np.isnan(df[column][i])])
 
     pulse_derivative_collection_for_end = trim_for_end(duration, pulse_derivative_collection, pulse_time_collection)
     pulse_derivative_abs_collection_for_end = trim_for_end(duration, pulse_derivative_abs_collection, pulse_time_collection)
@@ -360,7 +371,7 @@ def create_end_instance_for_video(working_directory, subject_id, video_id, durat
 
     facial_features_for_timestamp = facial_features.copy()
     for column in facial_features_for_timestamp.keys():
-        facial_features_for_timestamp[column] = trim_for_end(duration, facial_features[column], df['Timestamp'])
+        facial_features_for_timestamp[column] = trim_for_end(duration, facial_features[column])
 
     data_dict['User'].append(subject_id)
     data_dict['Video'].append(video_id + 1)
@@ -583,14 +594,17 @@ def preprocess():
 
     os.chdir(working_directory)
 
-    create_final_sheet_for_subject_using_end_as_instances(working_directory, i, int(config['DURATION']))
-
-    return
-
     res = [re.search('\d\d\d_\d*', f) for f in os.listdir('.')]
     res = [r.group() for r in res if r]
     participants = max([int(r[0:3]) for r in res])
 
+    for i in range(1, participants + 1):
+        if i == 4 or i == 20 or i == 23 or i == 28 or i == 32:  # these have faulty pulse files
+            continue
+        print i
+        create_final_sheet_for_subject_using_pulse_as_instances(working_directory, 1, int(config['THRESHOLD']) if config['THRESHOLD'] else 20)
+        create_final_sheet_for_subject_using_end_as_instances(working_directory, 1, int(config['DURATION']))
+    return
     #if config['LEAVE_ONE_SUBJECT_OUT'] == 'Y:
     #    excluded_subject = random.randint(1, participants)
 
