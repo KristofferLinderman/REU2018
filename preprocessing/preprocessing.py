@@ -246,14 +246,14 @@ def trim_for_timestamp(timestamp, collection, time_collection=None):
 def trim_for_end(duration, collection, time_collection=None):
     if not time_collection is None:
         return [collection[i] for i in range(len(collection)) if time_collection[i] >= (time_collection[len(time_collection) - 1] - duration)]
-    return [collection[i][0] for i in range(len(collection)) if collection[i][1] >= (collection[len(collection) - 1][1] - duration)]
-    #new_collection = []
-    #for i in range(len(collection)):
-    #    t = time_collection[i]
-    #    start_end = time_collection[len(time_collection) - 1] - duration
-    #    if t >= start_end:
-    #        new_collection.append(collection[i])
-    #return new_collection
+    new_collection = []
+    for i in range(len(collection)):
+        t = collection[i][1]
+        start_end = collection[len(collection) - 1][1] - duration
+        if t >= start_end:
+            new_collection.append(collection[i][0])
+    #new_collection = [collection[i][0] for i in range(len(collection)) if collection[i][1] >= (collection[len(collection) - 1][1] - duration)]
+    return new_collection
 
 
 def create_instances_for_video(working_directory, subject_id, video_id, threshold):
@@ -601,9 +601,7 @@ def preprocess():
     for i in range(1, participants + 1):
         if i == 4 or i == 20 or i == 23 or i == 28 or i == 32:  # these have faulty pulse files
             continue
-        print i
-        create_final_sheet_for_subject_using_pulse_as_instances(working_directory, 1, int(config['THRESHOLD']) if config['THRESHOLD'] else 20)
-        create_final_sheet_for_subject_using_end_as_instances(working_directory, 1, int(config['DURATION']))
+        create_final_sheet_for_subject_using_end_as_instances(working_directory, 2, int(config['DURATION']))
     return
     #if config['LEAVE_ONE_SUBJECT_OUT'] == 'Y:
     #    excluded_subject = random.randint(1, participants)

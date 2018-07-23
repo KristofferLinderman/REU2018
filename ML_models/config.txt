@@ -1,1 +1,1 @@
-DATA_DIRECTORY=/home/gustaf/Downloads/data/
+DATA_DIRECTORY=/home/gustaf/Downloads/reu/data_new/final/
