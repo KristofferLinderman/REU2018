@@ -41,8 +41,6 @@ class Data:
         '''
         survey_data = {}
         for column in survey_questions:
-            if column == 'What did you feel when watching the video?': #TODO fix
-                continue
             survey_data[column] = self.get_column_for_video(column, video)
         return survey_data
 
