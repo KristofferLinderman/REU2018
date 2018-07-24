@@ -9,8 +9,8 @@ def plot_tree(clf, name):
     graph.render(name)
 
 
-def dt(working_directory, filename, columns, question, name, max_depth=None, cross_validation_folds=5, render_tree=False):
-    data_X, data_y = load_data(working_directory, filename, columns, question)
+def dt(working_directory, filename, columns, question, name, max_depth=None, cross_validation_folds=5, render_tree=False, classify_maybe_as=None):
+    data_X, data_y = load_data(working_directory, filename, columns, question, classify_maybe_as=classify_maybe_as)
     if max_depth:
         clf = tree.DecisionTreeClassifier(max_depth=max_depth)
     else:
