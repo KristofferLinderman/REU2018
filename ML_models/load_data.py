@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import cross_val_score
+import random
 
 all_columns_min_max_avg = ['Pulse_derivative_min', 'Pulse_derivative_max', 'Pulse_derivative_average',
                            'Engagement_min', 'Engagement_max', 'Engagement_average',
@@ -64,13 +65,31 @@ def cross_validation(clf, data_X, data_y, folds, name):
     return scores
 
 
-def load_data(working_directory, filename, columns, question):
+def load_data(working_directory, filename, columns, question, classify_maybe_as=None):
     os.chdir(working_directory)
     df = pd.read_csv(filename)
     data_X = []
-    for column in columns:
-        data_X.append((df[column]))
+    for j in range(len(columns)):
+        if classify_maybe_as == 'Exclude' and question == 'Would you want to watch similar videos?':
+            data_X.append([])
+            for i in range(len(df[columns[j]])):
+                if not df['Would you want to watch similar videos?'][i] == 3:
+                    data_X[j].append((df[columns[j]][i]))
+        else:
+            data_X.append(df[columns[j]])
     data_X = np.transpose(data_X)
-    data_y = list(df[question])
+    if question == 'Would you want to watch similar videos?':
+        if classify_maybe_as == 'No':
+            data_y = [s if s == 1 or s == 2 else 2 for s in list(df[question])]
+        elif classify_maybe_as == 'Yes':
+            data_y = [s if s == 1 or s == 2 else 1 for s in list(df[question])]
+        elif classify_maybe_as == 'Half':
+            data_y = [s if s == 1 or s == 2 else random.randint(1, 2) for s in list(df[question])]
+        elif classify_maybe_as == 'Exclude':
+            data_y = [s for s in list(df[question]) if s == 1 or s == 2]
+        else:
+            data_y = list(df[question])
+    else:
+        data_y = list(df[question])
 
     return data_X, data_y

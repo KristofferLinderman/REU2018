@@ -268,9 +268,44 @@ def scatter_abs_pulse_score(data, figure_number):
     plt.axes().set_xlabel('Score')
 
 
+def scatter_smile_contempt(data, figure_number):
+    smile = []
+    contempt = []
+    for i in range(15):
+        smile.extend(data.get_column_for_video('Smile_average', id_stimuli[i + 1]))
+        contempt.extend(data.get_column_for_video('Contempt_average', id_stimuli[i + 1]))
+
+    plt.figure(figure_number)
+    plt.scatter(smile, contempt)
+    plt.axes().set_ylabel('Contempt')
+    plt.axes().set_xlabel('Smile')
+
+
+def bar_diagram_video_rating_total_binarized(data, figure_number):
+    names = stimuli_id.keys()
+    names = sorted(names, key=lambda name: stimuli_id[name])
+
+    scores = [0, 0]
+
+    for name in names:
+        survey_scores = data.get_survey_question_for_video(name, 'One a scale of 1 to 5, how would you rate the video?')
+        for s in survey_scores:
+            scores[s / 4] = scores[s / 4] + 1
+
+    plt.figure(figure_number)
+
+    plt.title('One a scale of 1 to 5, how would you rate the video?')
+    plt.xlabel('Score')
+    plt.ylabel('Number of votes')
+    plt.bar(['1-3', '4-5'], scores)
+
+    print scores
+    print sum(scores)
+
+
 def Analysis():
-    data = load_data.Data('/home/gustaf/Downloads/17_july/data/final/')
-    bar_diagram_video_rating(data, 1)
+    data = load_data.Data('/home/gustaf/Downloads/data/final/')
+    #bar_diagram_video_rating(data, 1)
     #box_pulse_video(data, 2)
     #box_pulse_score(data, 3)
     #scatter_pulse_score(data, 4)
@@ -278,6 +313,8 @@ def Analysis():
     #box_joy_video(data, 6)
     #hist_emotion_facial_expressions(data, 7)
     #box_video_facial_expression(data, 8)
+    #scatter_smile_contempt(data, 9)
+    bar_diagram_video_rating_total_binarized(data, 10)
     plt.show()
 
 
