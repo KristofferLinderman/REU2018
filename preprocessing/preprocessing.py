@@ -466,7 +466,7 @@ def organize(subject_id, main_filename):
         os.mkdir(str(subject_id))
         os.mkdir(str('final'))
     except:
-        pass
+        print 'Can\'t make folder for ' + str(subject_id)
     for stimulus in stimuli:
         os.system('mv pulse_' + stimulus.replace(' ', '\ ') + '_' + str(subject_id) + '.txt ' + str(subject_id))
         os.system('mv pulse_' + stimulus.replace(' ', '\ ') + '_' + str(subject_id) + '_trimmed.csv ' + str(subject_id))
@@ -474,6 +474,7 @@ def organize(subject_id, main_filename):
         os.system('mv ' + main_filename + ' ' + str(subject_id))
         os.system('mv ' + str(subject_id) + '.csv final')
         os.system('mv ' + str(subject_id) + '_with_instances.csv final')
+        os.system('mv ' + str(subject_id) + '_with_end_instances.csv final')
     try:
         os.chdir(str(subject_id))
         os.mkdir('pulse_files')
@@ -618,8 +619,12 @@ def preprocess():
     for i in range(1, participants + 1):
         if i == 4 or i == 20 or i == 23 or i == 28 or i == 32:  # these have faulty pulse files
             continue
-        create_final_sheet_for_subject_using_pulse_as_instances(working_directory, i, int(config['THRESHOLD']) if config['THRESHOLD'] else 20)
-        create_final_sheet_for_subject_using_end_as_instances(working_directory, i, int(config['DURATION']))
+        filename = ('0' + str(participants + 1 - i) + '_' + str(i) + '.csv')
+        if (participants + 1 - i) < 10:
+            filename = ('00' + str(participants + 1 - i) + '_' + str(i) + '.csv')
+        organize(i, filename)
+        os.chdir(working_directory)
+    create_master_sheet(working_directory + 'final/', excluded_subject)
     return
     #if config['LEAVE_ONE_SUBJECT_OUT'] == 'Y:
     #    excluded_subject = random.randint(1, participants)
