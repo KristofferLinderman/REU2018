@@ -3,6 +3,7 @@ from Decision_tree import *
 from random_forest import *
 from SVC import *
 from tabulate import tabulate
+import datetime
 
 questions = ['One a scale of 1 to 5, how would you rate the video?', 'Would you want to watch similar videos?']
 filenames = ['master.csv', 'master_with_instances.csv', 'master_with_end_instances.csv']
@@ -178,9 +179,10 @@ def train_models(working_directory, config):
 def main():
     config = load_config()
     working_directory = config['DATA_DIRECTORY']
-    model_results = train_models(working_directory, config)
+    #model_results = train_models(working_directory, config)
     #print tabulate(model_results, headers=header, tablefmt='orgtbl')
     #pd.DataFrame(model_results, columns=['Clasifier', 'Score using entire video', 'Score using pulse as instances', 'Score using end as instance']).to_csv('test.csv')
+    print 'start: ' + str(datetime.datetime.now())
     config_options = ['Yes', 'No', 'Half', 'Exclude', None]
     svc_C = [0.1, 1, 10, 100]
     for c in svc_C:
@@ -192,11 +194,13 @@ def main():
                         results = ablation_svc(working_directory, filenames[i], questions[j], config, C=c)
                         print '\n\n'
                         print tabulate(results, headers=['SVC (C=' + str(c) + ') Classifier features for ' + filenames[i] + ' ,' + questions[j] + ' CLASSIFY_MAYBE_AS=' + config_option if not config_option is None else 'None', 'Score'], tablefmt='orgtbl')
+                        print datetime.datetime.now()
                         pd.DataFrame(results, columns=['SVC (C=' + str(c) + ') Classifier features for ' + filenames[i] + ' ,' + questions[j] + ' CLASSIFY_MAYBE_AS=' + config_option if not config_option is None else 'None','Score']).to_csv('SVC_C' + str(c) + '_' + filenames[i].replace('.csv', '') + '_' + questions[j] + '_' + config_option if not config_option is None else 'None' + '.csv')
                 else:
                     results = ablation_svc(working_directory, filenames[i], questions[j], config, C=c)
                     print '\n\n'
                     print tabulate(results, headers=['SVC (C=' + str(c) + ') Classifier features for ' + filenames[i] + ' ,' + questions[j], 'Score'], tablefmt='orgtbl')
+                    print datetime.datetime.now()
                     pd.DataFrame(results, columns=['SVC (C=' + str(c) + ') Classifier features for ' + filenames[i] + ' ,' + questions[j], 'Score']).to_csv('SVC_C' + str(c) + '_' + filenames[i].replace('.csv', '') + '_' + questions[j] + '.csv')
 
     for i in range(len(filenames)):
@@ -207,11 +211,13 @@ def main():
                     results = ablation_dt(working_directory, filenames[i], questions[j], config)
                     print '\n\n'
                     print tabulate(results, headers=['Decision tree Classifier features for ' + filenames[i] + ' ,' + questions[j] + ' CLASSIFY_MAYBE_AS=' + config_option if not config_option is None else 'None' , 'Score'], tablefmt='orgtbl')
+                    print datetime.datetime.now()
                     pd.DataFrame(results, columns=['Decision tree Classifier features for ' + filenames[i] + ' ,' + questions[j] + ' CLASSIFY_MAYBE_AS=' + config_option if not config_option is None else 'None', 'Score']).to_csv('Decision_tree_' + filenames[i].replace('.csv', '') + '_' + questions[j] + config_option if not config_option is None else 'None' + '.csv')
             else:
                 results = ablation_dt(working_directory, filenames[i], questions[j], config)
                 print '\n\n'
                 print tabulate(results, headers=['Decision tree Classifier features for ' + filenames[i] + ' ,' + questions[j], 'Score'], tablefmt='orgtbl')
+                print datetime.datetime.now()
                 pd.DataFrame(results, columns=['Decision tree Classifier features for ' + filenames[i] + ' ,' + questions[j], 'Score']).to_csv('Decision_tree_' + filenames[i].replace('.csv', '') + '_' + questions[j] + '.csv')
 
     for i in range(len(filenames)):
@@ -222,13 +228,15 @@ def main():
                     results = ablation_rf(working_directory, filenames[i], questions[j], config)
                     print '\n\n'
                     print tabulate(results, headers=['Random forest Classifier features for ' + filenames[i] + ' ,' + questions[j] + ' CLASSIFY_MAYBE_AS=' + config_option if not config_option is None else 'None', 'Score'], tablefmt='orgtbl')
+                    print datetime.datetime.now()
                     pd.DataFrame(results, columns=['Random forest Classifier features for ' + filenames[i] + ' ,' + questions[j] + ' CLASSIFY_MAYBE_AS=' + config_option if not config_option is None else 'None', 'Score']).to_csv('Random_forest_' + filenames[i].replace('.csv', '') + '_' + questions[j] + config_option if not config_option is None else 'None' + '.csv')
             else:
                 results = ablation_rf(working_directory, filenames[i], questions[j], config)
                 print '\n\n'
                 print tabulate(results, headers=['Random forest Classifier features for ' + filenames[i] + ' ,' + questions[j], 'Score'], tablefmt='orgtbl')
+                print datetime.datetime.now()
                 pd.DataFrame(results, columns=['Random forest Classifier features for ' + filenames[i] + ' ,' + questions[j], 'Score']).to_csv('Random_forest_' + filenames[i].replace('.csv', '') + '_' + questions[j] + '.csv')
-
+    print 'end: ' + str(datetime.datetime.now())
 
 if __name__ == "__main__":
     main()
