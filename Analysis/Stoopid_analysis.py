@@ -22,6 +22,7 @@ def bar_chart_video_watch_similar(data, figure_number):
                     survey_answers[name][i - 1] = survey_answers[name][i - 1] + 1
 
     plt.figure(figure_number)
+    plt.tight_layout()
 
     xValues = [1, 2, 3]
     xStr = ["Yes", "No", "Maybe"]
@@ -34,7 +35,7 @@ def bar_chart_video_watch_similar(data, figure_number):
     order = [1, 6, 11, 2, 7, 12, 3, 8, 13, 4, 9, 14, 5, 10, 15]
     for i in range(len(names)):
         subplots.append(plt.subplot(3, 5, order[i]))
-        plt.title('Watch again for \"' + names[i] + '\"')
+        plt.title('Watch similar for \"' + names[i] + '\"')
         plt.xticks(xValues, xStr)
         plt.yticks(range(0, y_limit, 2))
         plt.bar([1, 2, 3, 4, 5], survey_answers[names[i]])
@@ -43,7 +44,45 @@ def bar_chart_video_watch_similar(data, figure_number):
         sub.set_xlim(0, x_limit)
     plt.subplots_adjust(top=0.92, bottom=0.08)
 
-    # plt.savefig('graphs/' + sys._getframe().f_code.co_name + '.png', dpi=200)
+
+def bar_chart_video_watch_similar_selective(data, figure_number,names_of_videos):
+    survey_answers = {}
+    for name in names_of_videos:
+        survey_answers[name] = []
+
+    for name in names_of_videos:
+        survey_scores = data.get_survey_question_for_video(name, 'Would you want to watch similar videos?')
+        for i in range(1, 6):
+            survey_answers[name].append(0)
+            for s in survey_scores:
+                if s == i:
+                    survey_answers[name][i - 1] = survey_answers[name][i - 1] + 1
+
+    plt.figure(figure_number)
+    plt.tight_layout()
+
+    xValues = [1, 2, 3]
+    xStr = ["Yes", "No", "Maybe"]
+    y_limit = 25
+    x_limit = 4
+
+    plt.xticks(xValues)
+    subplots = []
+
+    # order = [1, 6, 11, 2, 7, 12, 3, 8, 13, 4, 9, 14, 5, 10, 15]
+    for i in range(len(names_of_videos)):
+        subplots.append(plt.subplot(1, 2, i+1))
+        plt.title('Watch similar for \"' + names_of_videos[i] + '\"')
+        plt.xticks(xValues, xStr)
+        plt.yticks(range(0, y_limit, 2))
+        plt.bar([1, 2, 3, 4, 5], survey_answers[names_of_videos[i]])
+    for sub in subplots:
+        sub.set_ylim(0, y_limit)
+        sub.set_xlim(0, x_limit)
+    plt.subplots_adjust(top=0.92, bottom=0.08)
+
+
+# plt.savefig('graphs/' + sys._getframe().f_code.co_name + '.png', dpi=200)
 
 
 def histogram_score(data, figure_number):
@@ -109,7 +148,7 @@ def bar_chart_video_watch_similar_total(data, figure_number):
     names = stimuli_id.keys()
     names = sorted(names, key=lambda name: stimuli_id[name])
 
-    survey_answers = [0 for i in range(0,5,1)]
+    survey_answers = [0 for i in range(0, 5, 1)]
 
     for name in names:
         survey_scores = data.get_survey_question_for_video(name, 'Would you want to watch similar videos?')
@@ -128,17 +167,17 @@ def bar_chart_video_watch_similar_total(data, figure_number):
 
     plt.title('Would you want to watch similar videos?')
     plt.xticks(xValues, xStr)
-    plt.xlim(0,4)
+    plt.xlim(0, 4)
 
     plt.ylabel('Number of votes')
     plt.bar([1, 2, 3, 4, 5], survey_answers)
-
 
 
 def Analysis():
     data = load_data.Data('../..')
     # hist_emotion_facial_expressions(data, 1)
     # bar_chart_video_watch_similar(data, 1)
+    bar_chart_video_watch_similar_selective(data, 1,['Despicable','Dog'])
     # histogram_score(data,1)
     # bar_diagram_video_rating_total(data, 1)
     # bar_chart_video_watch_similar_total(data,2)

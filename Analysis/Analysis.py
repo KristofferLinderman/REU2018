@@ -1,3 +1,5 @@
+import matplotlib
+
 import load_data
 import matplotlib.pyplot as plt
 from static_values import *
@@ -100,6 +102,7 @@ def scatter_genre_scores(data, figure_number):
 
     scores_amount_genre = []
     annotation = []
+
     for i in range(5):
         scores_amount_genre.append([])
         annotation.append([])
@@ -115,8 +118,9 @@ def scatter_genre_scores(data, figure_number):
     genres = [[i + 1 for j in range(5)] for i in range(5)]
     scores = [[j + 1 for j in range(5)] for i in range(5)]
     print genres
+    matplotlib.rcParams.update({'font.size': 22})
     plt.figure(figure_number)
-    plt.scatter(genres, scores, s=scores_amount_genre)
+    plt.scatter(genres, scores, s=scores_amount_genre,color='#6699ff')
     #plt.axes().set_title('Is there a correleation between the average score for a video and the rating given?')
     plt.axes().set_ylabel('Rating')
     plt.axes().set_xticklabels(intended_emotions)
@@ -269,15 +273,15 @@ def scatter_abs_pulse_score(data, figure_number):
 
 
 def Analysis():
-    data = load_data.Data('/home/gustaf/Downloads/17_july/data/final/')
-    bar_diagram_video_rating(data, 1)
-    #box_pulse_video(data, 2)
-    #box_pulse_score(data, 3)
-    #scatter_pulse_score(data, 4)
-    #scatter_genre_scores(data, 5)
-    #box_joy_video(data, 6)
-    #hist_emotion_facial_expressions(data, 7)
-    #box_video_facial_expression(data, 8)
+    data = load_data.Data('../..')
+    # bar_diagram_video_rating(data, 1)
+    # box_pulse_video(data, 2)
+    # box_pulse_score(data, 3)
+    # scatter_pulse_score(data, 4)
+    scatter_genre_scores(data, 5)
+    # box_joy_video(data, 6)
+    # hist_emotion_facial_expressions(data, 7)
+    # box_video_facial_expression(data, 8)
     plt.show()
 
 
