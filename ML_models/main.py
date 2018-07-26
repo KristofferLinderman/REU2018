@@ -4,6 +4,8 @@ from random_forest import *
 from SVC import *
 from tabulate import tabulate
 import datetime
+from sklearn.dummy import DummyClassifier
+from threading import Thread
 
 questions = ['One a scale of 1 to 5, how would you rate the video?', 'Would you want to watch similar videos?']
 filenames = ['master.csv', 'master_with_instances.csv', 'master_with_end_instances.csv']
@@ -163,6 +165,114 @@ def ablation_rf(working_direction, filename, question, config):
     return scores
 
 
+
+
+def ablation(config, filename, question, clf):
+    feature_set = features
+    scores = []
+    all_features = []
+    name = ''
+    for f in feature_set:
+        name = name + f + ' + '
+    name = name[0:len(name) - 3]
+    for feature in feature_set:
+        for characteristic in characteristics:
+            all_features.append(feature + characteristic)
+    score = run_ML_leave_one_subject_out(config, filename, question, clf)
+    scores.append([name, score[0], score[1], score[2]])
+
+    while len(feature_set) > 2:
+        worst_feature = [0.00, 0.00, 0.00]
+        print 'feature length: ' + str(len(feature_set)) + '\n'
+        all_features = []
+
+        for feature in feature_set:
+            for characteristic in characteristics:
+                all_features.append(feature + characteristic)
+
+        for feature in feature_set:
+            temp_feature_set = [f for f in feature_set if not feature == f]
+            temp_all_features = []
+            for f in temp_feature_set:
+                for characteristic in characteristics:
+                    temp_all_features.append(f + characteristic)
+            name = ''
+            for f in temp_feature_set:
+                name = name + f + ' + '
+            name = name[0:len(name) - 3]
+            print 'removing feature: ' + feature
+            score = run_ML_leave_one_subject_out(config, filename, question, clf)
+            if score[0] > worst_feature[0]:
+                worst_feature = score
+                best_feature_set = temp_feature_set
+                best_name = name
+
+        feature_set = best_feature_set
+        scores.append([best_name, worst_feature[0], worst_feature[1], worst_feature[2]])
+
+    return scores
+
+
+def threaded_ablation(config, filename, question, clf):
+    feature_set = features
+    scores = []
+    all_features = []
+    name = ''
+    for f in feature_set:
+        name = name + f + ' + '
+    name = name[0:len(name) - 3]
+    for feature in feature_set:
+        for characteristic in characteristics:
+            all_features.append(feature + characteristic)
+    score = run_ML_leave_one_subject_out(config, filename, question, clf)
+    scores.append([name, score[0], score[1], score[2]])
+
+    while len(feature_set) > 2:
+        worst_feature = [0.00, 0.00, 0.00]
+        print 'feature length: ' + str(len(feature_set)) + '\n'
+        all_features = []
+
+        for feature in feature_set:
+            for characteristic in characteristics:
+                all_features.append(feature + characteristic)
+
+        threads = [None] * len(feature_set)
+        results = [None] * len(feature_set)
+        names = [None] * len(feature_set)
+        temp_feature_sets = [None] * len(feature_set)
+
+        for i in range(len(feature_set)):
+            feature = feature_set[i]
+            temp_feature_set = [f for f in feature_set if not feature == f]
+            temp_all_features = []
+            for f in temp_feature_set:
+                for characteristic in characteristics:
+                    temp_all_features.append(f + characteristic)
+            name = ''
+            for f in temp_feature_set:
+                name = name + f + ' + '
+            names[i] = name[0:len(name) - 3]
+            temp_feature_sets[i] = temp_feature_set
+            print 'removing feature: ' + feature
+            threads[i] = Thread(target=run_ML_leave_one_subject_out, args=(config, filename, question, clf, results, i))
+            threads[i].start()
+            #score = run_ML_leave_one_subject_out(config, filename, question, clf)
+
+        for i in range(len(threads)):
+            threads[i].join()
+
+        for i in range(len(results)):
+            if results[i][0] > worst_feature[0]:
+                worst_feature = results[i]
+                best_feature_set = temp_feature_sets[i]
+                best_name = names[i]
+
+        feature_set = best_feature_set
+        scores.append([best_name, worst_feature[0], worst_feature[1], worst_feature[2]])
+
+    return scores
+
+
 def train_models(working_directory, config):
     scores = [['Decision tree'], ['Random forest'], ['SVC']]
 
@@ -238,5 +348,76 @@ def main():
                 pd.DataFrame(results, columns=['Random forest Classifier features for ' + filenames[i] + ' ,' + questions[j], 'Score']).to_csv('Random_forest_' + filenames[i].replace('.csv', '') + '_' + questions[j] + '.csv')
     print 'end: ' + str(datetime.datetime.now())
 
+
+def run_ML_leave_one_subject_out(config, filename, question, clf, return_arr=None, return_index=-1):
+    working_directory = config['DATA_DIRECTORY']
+    data_X, data_y = load_data(working_directory, filename, all_columns_avg, question)
+    data = leave_one_subject_out(data_X, data_y, 'User')
+    score = 0
+    score_dummy_mf = 0
+    score_dummy_sf = 0
+    dummy_clf_mf = DummyClassifier('most_frequent')
+    dummy_clf_sf = DummyClassifier('stratified')
+    for (training_X, training_y), (testing_X, testing_y) in data:
+        clf.fit(training_X, training_y)
+        dummy_clf_mf.fit(training_X, training_y)
+        dummy_clf_sf.fit(training_X, training_y)
+
+        single_score = clf.score(testing_X, testing_y)
+        single_score_dummy_mf = dummy_clf_mf.score(testing_X, testing_y)
+        single_score_dummy_sf = dummy_clf_sf.score(testing_X, testing_y)
+        print 'Single run score: ' + ("%0.2f" % single_score.mean())
+        print 'Single run score (dummy most frequent): ' + ("%0.2f" % single_score_dummy_mf.mean())
+        print 'Single run score (dummy stratified): ' + ("%0.2f" % single_score_dummy_sf.mean())
+
+        score = score + single_score.mean()
+        score_dummy_mf = score_dummy_mf + single_score_dummy_mf.mean()
+        score_dummy_sf = score_dummy_sf + single_score_dummy_sf.mean()
+    score = round(float(score / len(data)), 2)
+    score_dummy_mf = round(float(score_dummy_mf / len(data)), 2)
+    score_dummy_sf = round(float(score_dummy_sf / len(data)), 2)
+    print 'Total score: ' + str(score)
+    print 'Total score (dummy most frequent): ' + str(score_dummy_mf)
+    print 'Total score (dummy stratified): ' + str(score_dummy_sf)
+    if return_index == -1:
+        return score, score_dummy_mf, score_dummy_sf
+    else:
+        return_arr[return_index] = (score, score_dummy_mf, score_dummy_sf)
+
+
+def main_leave_one_out():
+    config = load_config()
+    scores = []
+    for i in range(len(filenames)):
+        for j in range(len(questions)):
+            clf = svm.SVC(C=1, kernel='rbf')
+            ablation_score = threaded_ablation(config, filenames[i], questions[j], clf)
+            for score in ablation_score:
+                scores.append([('SVM_' + filenames[i].replace('.csv', '') + '_' + questions[j].replace('?', '').replace(' ', '_')), score[0], score[1], score[2], score[3]])
+        if i == 0:
+            break
+    print tabulate(scores, headers=['Classifier', 'Features', 'Score', 'Score dummy most frequent', 'Score dummy stratified'], tablefmt='orgtbl')
+    cols = ['Classifier', 'Features', 'Score', 'Score_dummy_most_frequent', 'Score_dummy_stratified']
+    results = {}
+    for col in cols:
+        results[col] = []
+    for val in scores:
+        for i in range(len(cols)):
+            results[cols[i]].append(val[i])
+    pd.DataFrame(results)[cols].to_csv('testt.csv')
+
+def test_leave_one_out():
+    test_leave_one_out_method()
+    return
+    config = load_config()
+    clf = svm.SVC(C=1, kernel='rbf')
+    run_ML_leave_one_subject_out(config, 'master.csv', questions[1], clf)
+
+    #results = ablation(config, 'master.csv', questions[1], clf)
+    #print '\n\n'
+    #print tabulate(results, headers=['SVC', 'Score'], tablefmt='orgtbl')
+
+
 if __name__ == "__main__":
-    main()
+    #main()
+    main_leave_one_out()
