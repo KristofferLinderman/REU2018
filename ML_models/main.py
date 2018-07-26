@@ -366,9 +366,9 @@ def run_ML_leave_one_subject_out(config, filename, question, clf, return_arr=Non
         single_score = clf.score(testing_X, testing_y)
         single_score_dummy_mf = dummy_clf_mf.score(testing_X, testing_y)
         single_score_dummy_sf = dummy_clf_sf.score(testing_X, testing_y)
-        print 'Single run score: ' + ("%0.2f" % single_score.mean())
-        print 'Single run score (dummy most frequent): ' + ("%0.2f" % single_score_dummy_mf.mean())
-        print 'Single run score (dummy stratified): ' + ("%0.2f" % single_score_dummy_sf.mean())
+        #print 'Single run score: ' + ("%0.2f" % single_score.mean())
+        #print 'Single run score (dummy most frequent): ' + ("%0.2f" % single_score_dummy_mf.mean())
+        #print 'Single run score (dummy stratified): ' + ("%0.2f" % single_score_dummy_sf.mean())
 
         score = score + single_score.mean()
         score_dummy_mf = score_dummy_mf + single_score_dummy_mf.mean()
@@ -376,9 +376,9 @@ def run_ML_leave_one_subject_out(config, filename, question, clf, return_arr=Non
     score = round(float(score / len(data)), 2)
     score_dummy_mf = round(float(score_dummy_mf / len(data)), 2)
     score_dummy_sf = round(float(score_dummy_sf / len(data)), 2)
-    print 'Total score: ' + str(score)
-    print 'Total score (dummy most frequent): ' + str(score_dummy_mf)
-    print 'Total score (dummy stratified): ' + str(score_dummy_sf)
+    #print 'Total score: ' + str(score)
+    #print 'Total score (dummy most frequent): ' + str(score_dummy_mf)
+    #print 'Total score (dummy stratified): ' + str(score_dummy_sf)
     if return_index == -1:
         return score, score_dummy_mf, score_dummy_sf
     else:
@@ -388,23 +388,42 @@ def run_ML_leave_one_subject_out(config, filename, question, clf, return_arr=Non
 def main_leave_one_out():
     config = load_config()
     scores = []
-    for i in range(len(filenames)):
-        for j in range(len(questions)):
+    print 'start:' + str(datetime.datetime.now())
+    for j in range(len(filenames)):
+        for k in range(len(questions)):
             clf = svm.SVC(C=1, kernel='rbf')
-            ablation_score = threaded_ablation(config, filenames[i], questions[j], clf)
+            print str(datetime.datetime.now()) + '\tSVM ablation ' + str(k + 1) + '/' + str(len(questions)) + ' for file ' + str(j + 1) + '/' + str(len(filenames)) + '\n'
+            ablation_score = ablation(config, filenames[j], questions[k], clf)
             for score in ablation_score:
-                scores.append([('SVM_' + filenames[i].replace('.csv', '') + '_' + questions[j].replace('?', '').replace(' ', '_')), score[0], score[1], score[2], score[3]])
-        if i == 0:
+                scores.append(['SVM', filenames[j], questions[k], score[0], score[1], score[2], score[3]])
+            if k == 0:
+                break
+        if j == 0:
             break
-    print tabulate(scores, headers=['Classifier', 'Features', 'Score', 'Score dummy most frequent', 'Score dummy stratified'], tablefmt='orgtbl')
-    cols = ['Classifier', 'Features', 'Score', 'Score_dummy_most_frequent', 'Score_dummy_stratified']
+
+    print tabulate(scores, headers=['Classifier', 'Data', 'question', 'Features', 'Score', 'Score dummy most frequent', 'Score dummy stratified'], tablefmt='orgtbl')
+
+
+    for j in range(len(filenames)):
+        for k in range(len(questions)):
+            clf = RandomForestClassifier()
+            print '\nRandom forest ablation ' + str(k + 1) + '/' + str(len(questions)) + ' for file ' + str(j + 1) + '/' + str(len(filenames)) + '\n'
+            ablation_score = ablation(config, filenames[j], questions[k], clf)
+            for score in ablation_score:
+                scores.append(['Random forest', filenames[j], questions[k], score[0], score[1], score[2], score[3]])
+
+    print tabulate(scores,headers=['Classifier', 'Data', 'question', 'Features', 'Score', 'Score dummy most frequent', 'Score dummy stratified'], tablefmt='orgtbl')
+    
+    cols = ['Classifier', 'Data', 'Question', 'Features', 'Score', 'Score_dummy_most_frequent', 'Score_dummy_stratified']
     results = {}
     for col in cols:
         results[col] = []
     for val in scores:
         for i in range(len(cols)):
             results[cols[i]].append(val[i])
-    pd.DataFrame(results)[cols].to_csv('testt.csv')
+    pd.DataFrame(results)[cols].to_csv('ml_models.csv')
+    print 'end:' + str(datetime.datetime.now())
+
 
 def test_leave_one_out():
     test_leave_one_out_method()
