@@ -32,6 +32,36 @@ def bar_diagram_video_rating(data, figure_number):
     plt.subplots_adjust(top=0.92, bottom=0.08)
 
 
+def bar_diagram_video_rating_selective(data, figure_number, video_names):
+    scores = {}
+    for name in video_names:
+        scores[name] = []
+
+    for name in video_names:
+        survey_scores = data.get_survey_question_for_video(name, 'One a scale of 1 to 5, how would you rate the video?')
+        for i in range(1, 6):
+            scores[name].append(0)
+            for s in survey_scores:
+                if s == i:
+                    scores[name][i - 1] = scores[name][i - 1] + 1
+
+    plt.figure(figure_number)
+    subplots = []
+    order = [1, 6, 11, 2, 7, 12, 3, 8, 13, 4, 9, 14, 5, 10, 15]
+    graph_rows = 1
+    graph_columns = 1
+    matplotlib.rcParams.update({'font.size': 22})
+    for i in range(len(video_names)):
+        subplots.append(plt.subplot(graph_rows, graph_columns, order[i]))
+        plt.title('Rating of \"' + video_names[i] + '\"')
+        plt.xlabel('Rating')
+        plt.ylabel('Number of Votes')
+        plt.bar([1, 2, 3, 4, 5], scores[video_names[i]])
+    for sub in subplots:
+        sub.set_ylim(0, 15)
+    plt.subplots_adjust(top=0.92, bottom=0.08)
+
+
 def box_pulse_video(data, figure_number):
     names = stimuli_id.keys()
     names = sorted(names, key=lambda name: stimuli_id[name])
@@ -43,7 +73,7 @@ def box_pulse_video(data, figure_number):
     plt.boxplot(pulse)
     names = [(name + '\n' + intended_emotions[((stimuli_id[name] - 1) / 3)]) for name in names]
     plt.axes().set_xticklabels(names)
-    #plt.axes().set_title('Is there a correlation between the average change in pulse during a video and the video category?')
+    # plt.axes().set_title('Is there a correlation between the average change in pulse during a video and the video category?')
     plt.axes().set_ylabel('average change in pulse during video [bpm/s]')
 
 
@@ -64,7 +94,7 @@ def box_pulse_score(data, figure_number):
     plt.boxplot(pulse_new)
     names = [1, 2, 3, 4, 5]
     plt.axes().set_xticklabels(names)
-    #plt.axes().set_title('Is there a correlation between the pulse derivative average and the score given')
+    # plt.axes().set_title('Is there a correlation between the pulse derivative average and the score given')
     plt.axes().set_ylabel('average change in pulse during video [bpm/s]')
     plt.axes().set_xlabel('Rating')
 
@@ -96,7 +126,7 @@ def scatter_genre_scores(data, figure_number):
     for i in range(5):
         scores_genre.append([])
         scores_genre[i].extend(scores[i * 3])
-        scores_genre[i].extend(scores[(i * 3)+ 1])
+        scores_genre[i].extend(scores[(i * 3) + 1])
         scores_genre[i].extend(scores[(i * 3) + 2])
 
     scores_amount_genre = []
@@ -111,7 +141,7 @@ def scatter_genre_scores(data, figure_number):
 
     print(scores_amount_genre)
     genres = []
-    #for i in range(len(intended_emotions)):
+    # for i in range(len(intended_emotions)):
     #    genres.append([i + 1 for j in range(len(scores_genre[0]))])
 
     genres = [[i + 1 for j in range(5)] for i in range(5)]
@@ -119,8 +149,8 @@ def scatter_genre_scores(data, figure_number):
     print genres
     matplotlib.rcParams.update({'font.size': 22})
     plt.figure(figure_number)
-    plt.scatter(genres, scores, s=scores_amount_genre,color='#6699ff')
-    #plt.axes().set_title('Is there a correleation between the average score for a video and the rating given?')
+    plt.scatter(genres, scores, s=scores_amount_genre, color='#6699ff')
+    # plt.axes().set_title('Is there a correleation between the average score for a video and the rating given?')
     plt.axes().set_ylabel('Rating')
     plt.axes().set_xticklabels(intended_emotions)
     plt.axes().set_xticks([1, 2, 3, 4, 5])
@@ -162,14 +192,17 @@ def hist_emotion_facial_expressions(data, figure_number):
         facial_expressions_for_Sadness.append([])
         facial_expressions_for_Sadness[i].extend(data.get_column_for_video(intended_emotions[i] + '_average', 'Dog'))
         facial_expressions_for_Sadness[i].extend(data.get_column_for_video(intended_emotions[i] + '_average', 'Forest'))
-        facial_expressions_for_Sadness[i].extend(data.get_column_for_video(intended_emotions[i] + '_average', 'Interstellar'))
+        facial_expressions_for_Sadness[i].extend(
+            data.get_column_for_video(intended_emotions[i] + '_average', 'Interstellar'))
     for i in range(len(intended_emotions)):
-        facial_expressions_for_Sadness[i] = sum(facial_expressions_for_Sadness[i]) / len(facial_expressions_for_Sadness[i])
+        facial_expressions_for_Sadness[i] = sum(facial_expressions_for_Sadness[i]) / len(
+            facial_expressions_for_Sadness[i])
 
     facial_expressions_for_Anger = []
     for i in range(len(intended_emotions)):
         facial_expressions_for_Anger.append([])
-        facial_expressions_for_Anger[i].extend(data.get_column_for_video(intended_emotions[i] + '_average', 'Wheelchair'))
+        facial_expressions_for_Anger[i].extend(
+            data.get_column_for_video(intended_emotions[i] + '_average', 'Wheelchair'))
         facial_expressions_for_Anger[i].extend(data.get_column_for_video(intended_emotions[i] + '_average', 'Help'))
         facial_expressions_for_Anger[i].extend(data.get_column_for_video(intended_emotions[i] + '_average', 'Amish'))
     for i in range(len(intended_emotions)):
@@ -187,11 +220,15 @@ def hist_emotion_facial_expressions(data, figure_number):
     facial_expressions_for_Surprise = []
     for i in range(len(intended_emotions)):
         facial_expressions_for_Surprise.append([])
-        facial_expressions_for_Surprise[i].extend(data.get_column_for_video(intended_emotions[i] + '_average', 'Magic Bird'))
-        facial_expressions_for_Surprise[i].extend(data.get_column_for_video(intended_emotions[i] + '_average', 'Flying'))
-        facial_expressions_for_Surprise[i].extend(data.get_column_for_video(intended_emotions[i] + '_average', 'Cocaine'))
+        facial_expressions_for_Surprise[i].extend(
+            data.get_column_for_video(intended_emotions[i] + '_average', 'Magic Bird'))
+        facial_expressions_for_Surprise[i].extend(
+            data.get_column_for_video(intended_emotions[i] + '_average', 'Flying'))
+        facial_expressions_for_Surprise[i].extend(
+            data.get_column_for_video(intended_emotions[i] + '_average', 'Cocaine'))
     for i in range(len(intended_emotions)):
-        facial_expressions_for_Surprise[i] = sum(facial_expressions_for_Surprise[i]) / len(facial_expressions_for_Surprise[i])
+        facial_expressions_for_Surprise[i] = sum(facial_expressions_for_Surprise[i]) / len(
+            facial_expressions_for_Surprise[i])
 
     plt.figure(figure_number)
 
@@ -231,7 +268,8 @@ def box_video_facial_expression(data, figure_number):
     for i in range(1, 16):
         facial_expressions_for_video.append([])
         for j in range(len(intended_emotions)):
-            facial_expressions_for_video[i - 1].append(data.get_column_for_video(intended_emotions[j] + '_average', id_stimuli[i]))
+            facial_expressions_for_video[i - 1].append(
+                data.get_column_for_video(intended_emotions[j] + '_average', id_stimuli[i]))
 
     plt.figure(figure_number)
 
@@ -307,17 +345,18 @@ def bar_diagram_video_rating_total_binarized(data, figure_number):
 
 
 def Analysis():
-    data = load_data.Data('/home/gustaf/Downloads/data/final/')
-    #bar_diagram_video_rating(data, 1)
-    #box_pulse_video(data, 2)
-    #box_pulse_score(data, 3)
-    #scatter_pulse_score(data, 4)
-    #scatter_genre_scores(data, 5)
-    #box_joy_video(data, 6)
-    #hist_emotion_facial_expressions(data, 7)
-    #box_video_facial_expression(data, 8)
-    #scatter_smile_contempt(data, 9)
-    bar_diagram_video_rating_total_binarized(data, 10)
+    data = load_data.Data('/Users/kristoffer/Programming/Python/')
+    # bar_diagram_video_rating(data, 1)
+    bar_diagram_video_rating_selective(data, 1,['Magic Bird'])
+    # box_pulse_video(data, 2)
+    # box_pulse_score(data, 3)
+    # scatter_pulse_score(data, 4)
+    # scatter_genre_scores(data, 5)
+    # box_joy_video(data, 6)
+    # hist_emotion_facial_expressions(data, 7)
+    # box_video_facial_expression(data, 8)
+    # scatter_smile_contempt(data, 9)
+    # bar_diagram_video_rating_total_binarized(data, 10)
     plt.show()
 
 
