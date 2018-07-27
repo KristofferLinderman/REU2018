@@ -344,19 +344,34 @@ def bar_diagram_video_rating_total_binarized(data, figure_number):
     print sum(scores)
 
 
+def plot_one_pulse_file(filename, figurenum):
+    time = []
+    pulse = []
+    with open(filename) as f:
+        for line in f:
+            line = line.replace('(', '').replace(')', '')
+            line = line.split(' ')
+            time.append(line[0])
+            pulse.append(line[1])
+
+    pulse = [(float(pulse[i]) + float(pulse[i - 1]) + float(pulse[i - 2]) + float(pulse[i - 3]) + float(pulse[i - 4])) / 5 for i in range(5, len(pulse))]
+    plt.figure(figurenum)
+    plt.plot(time[4:len(time) - 1], pulse)
+
+
 def Analysis():
-    data = load_data.Data('/Users/kristoffer/Programming/Python/')
-    # bar_diagram_video_rating(data, 1)
-    bar_diagram_video_rating_selective(data, 1,['Magic Bird'])
-    # box_pulse_video(data, 2)
-    # box_pulse_score(data, 3)
-    # scatter_pulse_score(data, 4)
-    # scatter_genre_scores(data, 5)
-    # box_joy_video(data, 6)
-    # hist_emotion_facial_expressions(data, 7)
-    # box_video_facial_expression(data, 8)
-    # scatter_smile_contempt(data, 9)
-    # bar_diagram_video_rating_total_binarized(data, 10)
+    data = load_data.Data('/home/gustaf/Downloads/data/final/')
+    #bar_diagram_video_rating(data, 1)
+    #box_pulse_video(data, 2)
+    #box_pulse_score(data, 3)
+    #scatter_pulse_score(data, 4)
+    #scatter_genre_scores(data, 5)
+    #box_joy_video(data, 6)
+    #hist_emotion_facial_expressions(data, 7)
+    #box_video_facial_expression(data, 8)
+    #scatter_smile_contempt(data, 9)
+    #bar_diagram_video_rating_total_binarized(data, 10)
+    plot_one_pulse_file('/home/gustaf/Downloads/data/1/pulse_files/pulse_Amish_1.txt', 11)
     plt.show()
 
 
