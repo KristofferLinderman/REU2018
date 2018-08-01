@@ -1,3 +1,5 @@
+import csv
+import os
 import matplotlib
 import load_data
 import matplotlib.pyplot as plt
