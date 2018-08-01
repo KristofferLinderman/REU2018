@@ -6,6 +6,7 @@ from tabulate import tabulate
 import datetime
 from sklearn.dummy import DummyClassifier
 from threading import Thread
+import sys
 
 questions = ['One a scale of 1 to 5, how would you rate the video?', 'Would you want to watch similar videos?']
 filenames = ['master.csv', 'master_with_instances.csv', 'master_with_end_instances.csv']
@@ -165,9 +166,7 @@ def ablation_rf(working_direction, filename, question, config):
     return scores
 
 
-
-
-def ablation(config, filename, question, clf):
+def ablation(config, filename, question, cols, clf):
     feature_set = features
     scores = []
     all_features = []
@@ -201,7 +200,7 @@ def ablation(config, filename, question, clf):
                 name = name + f + ' + '
             name = name[0:len(name) - 3]
             print 'removing feature: ' + feature
-            score = run_ML_leave_one_subject_out(config, filename, question, clf)
+            score = run_ML_leave_one_subject_out(config, filename, question, clf, temp_all_features)
             if score[0] > worst_feature[0]:
                 worst_feature = score
                 best_feature_set = temp_feature_set
@@ -349,9 +348,9 @@ def main():
     print 'end: ' + str(datetime.datetime.now())
 
 
-def run_ML_leave_one_subject_out(config, filename, question, clf, return_arr=None, return_index=-1):
+def run_ML_leave_one_subject_out(config, filename, question, clf, cols, return_arr=None, return_index=-1):
     working_directory = config['DATA_DIRECTORY']
-    data_X, data_y = load_data(working_directory, filename, all_columns_avg, question)
+    data_X, data_y = load_data(working_directory, filename, cols, question)
     data = leave_one_subject_out(data_X, data_y, 'User')
     score = 0
     score_dummy_mf = 0
@@ -396,10 +395,6 @@ def main_leave_one_out():
             ablation_score = ablation(config, filenames[j], questions[k], clf)
             for score in ablation_score:
                 scores.append(['SVM', filenames[j], questions[k], score[0], score[1], score[2], score[3]])
-            if k == 0:
-                break
-        if j == 0:
-            break
 
     print tabulate(scores, headers=['Classifier', 'Data', 'question', 'Features', 'Score', 'Score dummy most frequent', 'Score dummy stratified'], tablefmt='orgtbl')
 
@@ -413,7 +408,7 @@ def main_leave_one_out():
                 scores.append(['Random forest', filenames[j], questions[k], score[0], score[1], score[2], score[3]])
 
     print tabulate(scores,headers=['Classifier', 'Data', 'question', 'Features', 'Score', 'Score dummy most frequent', 'Score dummy stratified'], tablefmt='orgtbl')
-    
+
     cols = ['Classifier', 'Data', 'Question', 'Features', 'Score', 'Score_dummy_most_frequent', 'Score_dummy_stratified']
     results = {}
     for col in cols:
@@ -437,6 +432,96 @@ def test_leave_one_out():
     #print tabulate(results, headers=['SVC', 'Score'], tablefmt='orgtbl')
 
 
+def main_best_classifiers():
+    config = load_config()
+    scores = []
+    clf = RandomForestClassifier()
+    #run_ML_leave_one_subject_out(config, 'master.csv', '')
+
+
+def main_leave_one_out_one():
+    config = load_config()
+    config['DATA_DIRECTORY'] = config['DATA_DIRECTORY'] + 'iter_one/'
+    scores = []
+    print 'start:' + str(datetime.datetime.now())
+    for j in range(len(filenames)):
+        question = questions[0]
+        clf = svm.SVC(C=1, kernel='rbf')
+        print str(datetime.datetime.now()) + '\tSVM ablation for file ' + str(j + 1) + '/' + str(len(filenames)) + '\n'
+        ablation_score = ablation(config, filenames[j], question, all_columns_all_characteristics, clf)
+        for score in ablation_score:
+            scores.append(['SVM', filenames[j], question, score[0], score[1], score[2], score[3]])
+
+    for j in range(len(filenames)):
+        question = questions[0]
+        clf = RandomForestClassifier()
+        print '\nRandom forest ablation for file ' + str(j + 1) + '/' + str(len(filenames)) + '\n'
+        ablation_score = ablation(config, filenames[j], question, all_columns_all_characteristics, clf)
+        for score in ablation_score:
+            scores.append(['Random forest', filenames[j], question, score[0], score[1], score[2], score[3]])
+
+    cols = ['Classifier', 'Data', 'Question', 'Features', 'Score', 'Score_dummy_most_frequent',
+            'Score_dummy_stratified']
+    results = {}
+    for col in cols:
+        results[col] = []
+    for val in scores:
+        for i in range(len(cols)):
+            results[cols[i]].append(val[i])
+    pd.DataFrame(results)[cols].to_csv('ml_models_1.csv')
+    print 'end:' + str(datetime.datetime.now())
+
+
+def main_leave_one_out_two():
+    config = load_config()
+    config['DATA_DIRECTORY'] = config['DATA_DIRECTORY'] + 'iter_two/'
+    scores = []
+    print 'start:' + str(datetime.datetime.now())
+    for j in range(len(filenames)):
+        question = questions[1]
+        clf = svm.SVC(C=1, kernel='rbf')
+        print str(datetime.datetime.now()) + '\tSVM ablation for file ' + str(j + 1) + '/' + str(len(filenames)) + '\n'
+        ablation_score = ablation(config, filenames[j], question, all_columns_all_characteristics, clf)
+        for score in ablation_score:
+            scores.append(['SVM', filenames[j], question, score[0], score[1], score[2], score[3]])
+
+    for j in range(len(filenames)):
+        question = questions[1]
+        clf = RandomForestClassifier()
+        print '\nRandom forest ablation for file ' + str(j + 1) + '/' + str(len(filenames)) + '\n'
+        ablation_score = ablation(config, filenames[j], question, all_columns_all_characteristics, clf)
+        for score in ablation_score:
+            scores.append(['Random forest', filenames[j], question, score[0], score[1], score[2], score[3]])
+
+    cols = ['Classifier', 'Data', 'Question', 'Features', 'Score', 'Score_dummy_most_frequent',
+            'Score_dummy_stratified']
+    results = {}
+    for col in cols:
+        results[col] = []
+    for val in scores:
+        for i in range(len(cols)):
+            results[cols[i]].append(val[i])
+    pd.DataFrame(results)[cols].to_csv('ml_models_2.csv')
+    print 'end:' + str(datetime.datetime.now())
+
+
 if __name__ == "__main__":
+    choice = -1
+    try:
+        choice = int(sys.argv[1])
+    except:
+        if len(sys.argv) == 1:
+            choice = -1
+        else:
+            raise ValueError('Invalid choice')
+    if choice == 1:
+        print 'Running main_leave_one_out_one'
+        main_leave_one_out_one()
+    elif choice == 2:
+        print 'Running main_leave_one_out_two'
+        main_leave_one_out_two()
+    else:
+        print 'Running main_leave_one_out'
+        main_leave_one_out()
     #main()
-    main_leave_one_out()
+    #main_leave_one_out()
