@@ -307,6 +307,7 @@ def calculate_percentage_of_face():
     # print 'Min: ', min, ' at: ', min_id
     # print 'Not 100% ', counter, ' times'
 
+    #The results from running above code, saved here to make it run faster
     average_percentages = {'Amish': 0.26169395883046914, 'Help': 0.1647084343029575, 'Noah': 1.4021603996022252,
                            'Cocaine': 2.8603968743183628, 'Dino': 1.6580366306666459, 'Wheelchair': 0.2589345128474099,
                            'Flying': 0.5887483566445857, 'Interstellar': 0.7255009664283529, 'Dog': 1.4269808758258062,
